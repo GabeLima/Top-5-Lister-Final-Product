@@ -16,8 +16,48 @@ getLoggedIn = async (req, res) => {
     })
 }
 
+loginUser = async (req, res) => {
+    console.log("Inside loginUser!");
+    auth.verify(req, res, async function () {
+        console.log("Trying to log in the user, heres the request details: ", req.body);
+        const { email, password } = req.body;
+        if (!email || !password) {
+            return res
+                .status(400)
+                .json({ errorMessage: "Please enter all required fields." });
+        }
+        console.log("Email we're querying by: ", email);
+        const loggedInUser = await User.findOne({ email: email });
+        console.log(loggedInUser);
+        if(loggedInUser === null){
+            return res
+            .status(400)
+            .json({ errorMessage: "Bad Email!"});
+        }
+        //need to check the password here
+        bcrypt.compare(password, loggedInUser.passwordHash, (err, result) => {
+            if (err) return callback(err);
+            if (!result){
+                console.log("Passwords are not the same!");
+                return res.status(400).json({ errorMessage: "Bad password!"});
+            }
+        });
+        console.log("Login successful!");
+        return res.status(200).json({
+            //req: req,
+            loggedIn: true,
+            user: {
+                firstName: loggedInUser.firstName,
+                lastName: loggedInUser.lastName,
+                email: loggedInUser.email
+            }
+        }).send();
+    })
+}
+
 registerUser = async (req, res) => {
     try {
+        console.log("Attempting to register the user");
         const { firstName, lastName, email, password, passwordVerify } = req.body;
         if (!firstName || !lastName || !email || !password || !passwordVerify) {
             return res
@@ -56,7 +96,8 @@ registerUser = async (req, res) => {
             firstName, lastName, email, passwordHash
         });
         const savedUser = await newUser.save();
-
+        console.log("newUser: ", newUser);
+        console.log("saveduser: ", savedUser);
         // LOGIN THE USER
         const token = auth.signToken(savedUser);
 
@@ -80,5 +121,6 @@ registerUser = async (req, res) => {
 
 module.exports = {
     getLoggedIn,
-    registerUser
+    registerUser,
+    loginUser
 }

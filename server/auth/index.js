@@ -4,7 +4,9 @@ function authManager() {
     verify = function (req, res, next) {
         try {
             const token = req.cookies.token;
+            console.log("token: ", token);
             if (!token) {
+                console.log("Invalid token!");
                 return res.status(401).json({
                     loggedIn: false,
                     user: null,
@@ -17,6 +19,7 @@ function authManager() {
 
             next();
         } catch (err) {
+            console.log("Something went wrong in verify!");
             console.error(err);
             return res.status(401).json({
                 errorMessage: "Unauthorized"
@@ -25,6 +28,7 @@ function authManager() {
     }
 
     signToken = function (user) {
+        console.log("Signing token");
         return jwt.sign({
             userId: user._id
         }, process.env.JWT_SECRET);
