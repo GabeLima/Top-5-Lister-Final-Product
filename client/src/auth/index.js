@@ -19,9 +19,9 @@ function AuthContextProvider(props) {
     });
     const history = useHistory();
 
-    // useEffect(() => {
-    //     auth.getLoggedIn();
-    // }, []);
+    useEffect(() => {
+        auth.getLoggedIn();
+    }, []);
 
     const authReducer = (action) => {
         const { type, payload } = action;
@@ -52,11 +52,25 @@ function AuthContextProvider(props) {
         }
     }
 
+    auth.logoutUser = async function () {
+        const response = await api.logoutUser();
+        if (response.status === 200) {
+            authReducer({
+                type: AuthActionType.GET_LOGGED_IN,
+                payload: {
+                    loggedIn: response.data.loggedIn,
+                    user: response.data.user
+                }
+            });
+        }
+    }
+
+
     auth.getLoggedIn = async function () {
         const response = await api.getLoggedIn();
         if (response.status === 200) {
             authReducer({
-                type: AuthActionType.SET_LOGGED_IN,
+                type: AuthActionType.GET_LOGGED_IN,
                 payload: {
                     loggedIn: response.data.loggedIn,
                     user: response.data.user
@@ -86,10 +100,11 @@ function AuthContextProvider(props) {
             console.log("Users gotten from the database: ", response);
             if (response.status === 200) {
                 console.log("Login status (from loginUser reducer: ", response.data.loggedIn);
+                console.log("User data: ", response.data.user);
                 authReducer({
                     type: AuthActionType.LOGIN_USER,
                     payload: {
-                        loggedIn: response.data.loggedIn,
+                        loggedIn: true,
                         user: response.data.user
                     }
                 })
@@ -97,6 +112,7 @@ function AuthContextProvider(props) {
                 store.loadIdNamePairs();
             }
         }catch (Exception){
+            console.log(Exception);
             console.log("Exception caught while calling the api.loginUser");
         }
     }

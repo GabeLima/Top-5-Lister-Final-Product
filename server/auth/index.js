@@ -6,6 +6,8 @@ function authManager() {
             const token = req.cookies.token;
             console.log("token: ", token);
             if (!token) {
+                //create the cookie here?
+
                 console.log("Invalid token!");
                 return res.status(401).json({
                     loggedIn: false,
