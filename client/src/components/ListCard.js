@@ -46,12 +46,24 @@ function ListCard(props) {
     }
 
     function handleKeyPress(event) {
-        if (event.code === "Enter") {
-            let id = event.target.id.substring("list-".length);
-            store.changeListName(id, text);
+        if (event.code === "Enter" || event.code === "NumpadEnter") {
+            if(text != ""){
+                let id = event.target.id.substring("list-".length);
+                store.changeListName(id, text);
+            }
             toggleEdit();
         }
     }
+
+    function handleOnBlur(event) {
+        if(text != ""){
+            let id = event.target.id.substring("list-".length);
+            console.log("Onblur called, text: ", text);
+            store.changeListName(id, text);
+        }
+        toggleEdit();
+    }
+
     function handleUpdateText(event) {
         setText(event.target.value);
     }
@@ -99,6 +111,7 @@ function ListCard(props) {
                 className='list-card'
                 onKeyPress={handleKeyPress}
                 onChange={handleUpdateText}
+                onBlur = {handleOnBlur}
                 defaultValue={idNamePair.name}
                 inputProps={{style: {fontSize: 48}}}
                 InputLabelProps={{style: {fontSize: 24}}}

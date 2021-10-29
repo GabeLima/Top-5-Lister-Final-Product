@@ -48,6 +48,20 @@ function Top5Item(props) {
         store.addMoveItemTransaction(sourceId, targetId);
     }
 
+    function handleToggleEdit(event) {
+        event.stopPropagation();
+        toggleEdit();
+    }
+
+    function toggleEdit() {
+        console.log("Inside toggle edit");
+        let newActive = !editActive;
+        if (newActive) {
+            store.setIsItemEditActive();
+        }
+        setEditActive(newActive);
+    }
+
     let { index } = props;
 
     let itemClass = "top5-item";
@@ -83,8 +97,8 @@ function Top5Item(props) {
                 }}
             >
             <Box sx={{ p: 1 }}>
-                <IconButton aria-label='edit'>
-                    <EditIcon style={{fontSize:'48pt'}}  />
+                <IconButton onClick={handleToggleEdit} aria-label='edit'>
+                    <EditIcon style={{fontSize:'48pt'}} />
                 </IconButton>
             </Box>
                 <Box sx={{ p: 1, flexGrow: 1 }}>{props.text}</Box>

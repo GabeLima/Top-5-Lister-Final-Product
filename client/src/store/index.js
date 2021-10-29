@@ -167,6 +167,9 @@ function GlobalStoreContextProvider(props) {
         let response = await api.getTop5ListById(id);
         if (response.data.success) {
             let top5List = response.data.top5List;
+            if(top5List.name === newName){
+                return;
+            }
             top5List.name = newName;
             async function updateList(top5List) {
                 response = await api.updateTop5ListById(top5List._id, top5List);
@@ -187,6 +190,7 @@ function GlobalStoreContextProvider(props) {
                     getListPairs(top5List);
                 }
             }
+
             updateList(top5List);
         }
     }
