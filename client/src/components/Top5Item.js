@@ -61,6 +61,30 @@ function Top5Item(props) {
         }
         setEditActive(newActive);
     }
+    function handleKeyPress(event) {
+        if (event.code === "Enter" || event.code === "NumpadEnter") {
+            var text = event.target.value;
+            if(text !== ""){
+                let id = event.target.id.substring("list-".length);
+                if(store.currentList.items[id-1] !== text){
+                    store.addUpdateItemTransaction(id-1, text);
+                }
+            }
+            toggleEdit();
+        }
+    }
+
+    function handleOnBlur(event) {
+        //console.log(store.currentList);
+            var text = event.target.value;
+            if(text !== ""){
+                let id = event.target.id.substring("list-".length);
+                if(store.currentList.items[id-1] !== text){
+                    store.addUpdateItemTransaction(id-1, text);
+                }
+            }
+            toggleEdit();
+    }
 
     let { index } = props;
 
@@ -69,40 +93,63 @@ function Top5Item(props) {
         itemClass = "top5-item-dragged-to";
     }
 
+    let itemElement = 
+        <ListItem
+        id={'item-' + (index+1)}
+        key={props.key}
+        className={itemClass}
+        onDragStart={(event) => {
+            handleDragStart(event, (index+1))
+        }}
+        onDragOver={(event) => {
+            handleDragOver(event, (index+1))
+        }}
+        onDragEnter={(event) => {
+            handleDragEnter(event, (index+1))
+        }}
+        onDragLeave={(event) => {
+            handleDragLeave(event, (index+1))
+        }}
+        onDrop={(event) => {
+            handleDrop(event, (index+1))
+        }}
+        draggable="true"
+        sx={{ display: 'flex', p: 1 }}
+        style={{
+            fontSize: '48pt',
+            width: '100%'
+        }}
+    >
+    <Box sx={{ p: 1 }}>
+        <IconButton onClick={handleToggleEdit} aria-label='edit'>
+            <EditIcon style={{fontSize:'48pt'}} />
+        </IconButton>
+    </Box>
+        <Box sx={{ p: 1, flexGrow: 1 }}>{props.text}</Box>
+    </ListItem>
+    if(editActive){
+        itemElement = 
+        <TextField
+            margin="normal"
+            required
+            fullWidth
+            id={"item-" + (index + 1)}
+            label={"item " + (index + 1)}
+            name="name"
+            autoComplete={itemClass}
+            className={itemClass}
+            onKeyPress={handleKeyPress}
+            onBlur = {handleOnBlur}
+            defaultValue={store.currentList.items[index]}
+            inputProps={{style: {fontSize: 48}}}
+            InputLabelProps={{style: {fontSize: 24}}}
+            autoFocus
+        />
+    }
+
+
     return (
-            <ListItem
-                id={'item-' + (index+1)}
-                key={props.key}
-                className={itemClass}
-                onDragStart={(event) => {
-                    handleDragStart(event, (index+1))
-                }}
-                onDragOver={(event) => {
-                    handleDragOver(event, (index+1))
-                }}
-                onDragEnter={(event) => {
-                    handleDragEnter(event, (index+1))
-                }}
-                onDragLeave={(event) => {
-                    handleDragLeave(event, (index+1))
-                }}
-                onDrop={(event) => {
-                    handleDrop(event, (index+1))
-                }}
-                draggable="true"
-                sx={{ display: 'flex', p: 1 }}
-                style={{
-                    fontSize: '48pt',
-                    width: '100%'
-                }}
-            >
-            <Box sx={{ p: 1 }}>
-                <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                    <EditIcon style={{fontSize:'48pt'}} />
-                </IconButton>
-            </Box>
-                <Box sx={{ p: 1, flexGrow: 1 }}>{props.text}</Box>
-            </ListItem>
+        itemElement
     )
 }
 

@@ -47,7 +47,7 @@ function ListCard(props) {
 
     function handleKeyPress(event) {
         if (event.code === "Enter" || event.code === "NumpadEnter") {
-            if(text != ""){
+            if(text !== ""){
                 let id = event.target.id.substring("list-".length);
                 store.changeListName(id, text);
             }
@@ -56,7 +56,7 @@ function ListCard(props) {
     }
 
     function handleOnBlur(event) {
-        if(text != ""){
+        if(text !== ""){
             let id = event.target.id.substring("list-".length);
             console.log("Onblur called, text: ", text);
             store.changeListName(id, text);
