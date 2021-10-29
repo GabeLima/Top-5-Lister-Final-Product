@@ -18,6 +18,9 @@ function AuthContextProvider(props) {
         loggedIn: false
     });
     const history = useHistory();
+    //SETTING UP ALERTS
+    const [alert, setAlert] = useState(false);
+    const [alertContent, setAlertContent] = useState('');
 
     useEffect(() => {
         auth.getLoggedIn();

@@ -27,16 +27,36 @@ function EditToolbar() {
     if (store.isListNameEditActive) {
         editStatus = true;
     }  
+
+    // let enabledButtonClass = "top5-button";
+    // let disabledButtonClass = "top5-button-disabled";
+    // let undoClass = disabledButtonClass; 
+    // let redoClass = disabledButtonClass; 
+    var cantUndo = true;
+    var cantRedo = true;
+    if(store.canUndo()){
+        cantUndo = false;
+        console.log("Something to undo");
+        //undoClass = enabledButtonClass;
+    }
+    else if(store.canRedo()){
+        cantRedo = false;
+        console.log("Something to redo");
+        //redoClass = enabledButtonClass;
+    }
     return (
         <div id="edit-toolbar">
             <Button 
                 id='undo-button'
+                disabled = {cantUndo}
                 onClick={handleUndo}
                 variant="contained">
                     <UndoIcon />
             </Button>
             <Button 
                 id='redo-button'
+                disabled = {cantRedo}
+                //class={redoClass}
                 onClick={handleRedo}
                 variant="contained">
                     <RedoIcon />
