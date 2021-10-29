@@ -178,10 +178,24 @@ function GlobalStoreContextProvider(props) {
                         response = await api.getTop5ListPairs();
                         if (response.data.success) {
                             let pairsArray = response.data.idNamePairs;
+                            let newArray = [];
+                            for(let i = 0; i < pairsArray.length; i ++){
+                                let newResponse = await api.getTop5ListById(pairsArray[i]._id);
+                                console.log(newResponse);
+                                if(newResponse.data.success){
+                                    let top5List = newResponse.data.top5List;
+                                    if(top5List.ownerEmail === auth.user.email){
+                                        console.log("Emails are equivalent, ", top5List.ownerEmail);
+                                        newArray.push(pairsArray[i]);
+                                        //console.log("Invalid email detected! Aborting accessing.");
+                                        //return;
+                                    }
+                                }
+                            }
                             storeReducer({
                                 type: GlobalStoreActionType.CHANGE_LIST_NAME,
                                 payload: {
-                                    idNamePairs: pairsArray,
+                                    idNamePairs: newArray,
                                     top5List: top5List
                                 }
                             });
@@ -209,6 +223,7 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION CREATES A NEW LIST
     store.createNewList = async function () {
         let newListName = "Untitled" + store.newListCounter;
+        console.log("Creating a new list, user email: ", auth.user.email);
         let payload = {
             name: newListName,
             items: ["?", "?", "?", "?", "?"],
@@ -238,9 +253,24 @@ function GlobalStoreContextProvider(props) {
         const response = await api.getTop5ListPairs();
         if (response.data.success) {
             let pairsArray = response.data.idNamePairs;
+            let newArray = [];
+            for(let i = 0; i < pairsArray.length; i ++){
+                let newResponse = await api.getTop5ListById(pairsArray[i]._id);
+                console.log(newResponse);
+                if(newResponse.data.success){
+                    let top5List = newResponse.data.top5List;
+                    if(top5List.ownerEmail === auth.user.email){
+                        console.log("Emails are equivalent, ", top5List.ownerEmail);
+                        newArray.push(pairsArray[i]);
+                        //console.log("Invalid email detected! Aborting accessing.");
+                        //return;
+                    }
+                }
+            }
+
             storeReducer({
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                payload: pairsArray
+                payload: newArray
             });
         }
         else {
@@ -257,6 +287,10 @@ function GlobalStoreContextProvider(props) {
         let response = await api.getTop5ListById(id);
         if (response.data.success) {
             let top5List = response.data.top5List;
+            if(top5List.ownerEmail !== auth.user.email){
+                console.log("Invalid email detected! Aborting accessing.", top5List.ownerEmail, auth.user.email);
+                return;
+            }
             storeReducer({
                 type: GlobalStoreActionType.MARK_LIST_FOR_DELETION,
                 payload: top5List
@@ -265,6 +299,12 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.deleteList = async function (listToDelete) {
+        let tempResponse = await api.getTop5ListById(listToDelete._id);
+        let top5List = tempResponse.data.top5List;
+        if(top5List.ownerEmail !== auth.user.email){
+            console.log("Invalid email detected! Aborting accessing.", top5List.ownerEmail, auth.user.email);
+            return;
+        }
         let response = await api.deleteTop5ListById(listToDelete._id);
         if (response.data.success) {
             store.loadIdNamePairs();
@@ -291,7 +331,10 @@ function GlobalStoreContextProvider(props) {
         let response = await api.getTop5ListById(id);
         if (response.data.success) {
             let top5List = response.data.top5List;
-
+            if(top5List.ownerEmail !== auth.user.email){
+                console.log("Invalid email detected! Aborting accessing.", top5List.ownerEmail, auth.user.email);
+                return;
+            }
             response = await api.updateTop5ListById(top5List._id, top5List);
             if (response.data.success) {
                 storeReducer({
