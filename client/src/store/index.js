@@ -305,7 +305,7 @@ function GlobalStoreContextProvider(props) {
         async function asyncHideDeleteListModal() {
             console.log("Marking list for deletion...");
             storeReducer({
-                type: GlobalStoreActionType.SET_LIST_MARKED_FOR_DELETION,
+                type: GlobalStoreActionType.UNMARK_LIST_FOR_DELETION,
                 payload: null
             });
         }

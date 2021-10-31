@@ -21,7 +21,16 @@ const HomeScreen = () => {
         store.createNewList();
     }
     let listCard = "";
+    let isOpen = false;
     if (store) {
+        if(store.listMarkedForDeletion && store.listMarkedForDeletion != null){
+            console.log("isOpen is marked to TRUE after render");
+            isOpen = true;
+        }else{
+            console.log("isOpen is marked to FALSE after render");
+            isOpen = false;
+        }
+        console.log("isOpen value: ", isOpen);
         listCard = 
             <List sx={{ width: '90%', left: '5%', bgcolor: 'background.paper' }}>
             {
@@ -33,9 +42,10 @@ const HomeScreen = () => {
                     />
                 ))
             }
-            <DeleteModal></DeleteModal>
+            <DeleteModal open={isOpen} ></DeleteModal>
             </List>;
     }
+    // old delete modal went above the /list here
     return (
         <div id="top5-list-selector">
             <div id="list-selector-heading">

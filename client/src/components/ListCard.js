@@ -20,17 +20,7 @@ function ListCard(props) {
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
     const { idNamePair } = props;
-    //FOR DELETE MODAL
-    const [open, setOpen] = useState(false);
-
-    const handleOpen = () => {
-      setOpen(true);
-    };
-
-    const handleClose = () => {
-      setOpen(false);
-    };
-
+    let isOpen = false;
 
     function handleLoadList(event, id) {
         if (!event.target.disabled) {
@@ -55,7 +45,7 @@ function ListCard(props) {
     async function handleDeleteList(event, id) {
         event.stopPropagation();
         store.markListForDeletion(id);
-        handleOpen();
+        isOpen = true;
         console.log("Marking list for deletion: ", id);
     }
 
@@ -81,7 +71,6 @@ function ListCard(props) {
     function handleUpdateText(event) {
         setText(event.target.value);
     }
-
     let cardElement =
         <ListItem
             id={idNamePair._id}
@@ -108,7 +97,6 @@ function ListCard(props) {
                         handleDeleteList(event, idNamePair._id)
                     }} aria-label='delete'>
                         <DeleteIcon style={{fontSize:'48pt'}} />
-                        <DeleteModal open = {open} onClose = {handleClose}></DeleteModal>
                     </IconButton>
                 </Box>
         </ListItem>
