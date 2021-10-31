@@ -295,7 +295,23 @@ function GlobalStoreContextProvider(props) {
                 type: GlobalStoreActionType.MARK_LIST_FOR_DELETION,
                 payload: top5List
             });
+            console.log("Current list before opening the delete modal: ", store.currentList);
+            // let modal = document.getElementById("delete-modal");
+            // modal.classList.add("is-visible");
         }
+    }
+    //HIDES THE DELETE MODAL
+    store.hideDeleteListModal = function () {
+        async function asyncHideDeleteListModal() {
+            console.log("Marking list for deletion...");
+            storeReducer({
+                type: GlobalStoreActionType.SET_LIST_MARKED_FOR_DELETION,
+                payload: null
+            });
+        }
+        asyncHideDeleteListModal();
+        // let modal = document.getElementById("delete-modal");
+        // modal.classList.remove("is-visible");
     }
 
     store.deleteList = async function (listToDelete) {

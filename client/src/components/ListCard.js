@@ -6,6 +6,7 @@ import ListItem from '@mui/material/ListItem';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DeleteModal from './DeleteModal';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -19,6 +20,17 @@ function ListCard(props) {
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
     const { idNamePair } = props;
+    //FOR DELETE MODAL
+    const [open, setOpen] = useState(false);
+
+    const handleOpen = () => {
+      setOpen(true);
+    };
+
+    const handleClose = () => {
+      setOpen(false);
+    };
+
 
     function handleLoadList(event, id) {
         if (!event.target.disabled) {
@@ -43,6 +55,8 @@ function ListCard(props) {
     async function handleDeleteList(event, id) {
         event.stopPropagation();
         store.markListForDeletion(id);
+        handleOpen();
+        console.log("Marking list for deletion: ", id);
     }
 
     function handleKeyPress(event) {
@@ -94,6 +108,7 @@ function ListCard(props) {
                         handleDeleteList(event, idNamePair._id)
                     }} aria-label='delete'>
                         <DeleteIcon style={{fontSize:'48pt'}} />
+                        <DeleteModal open = {open} onClose = {handleClose}></DeleteModal>
                     </IconButton>
                 </Box>
         </ListItem>
