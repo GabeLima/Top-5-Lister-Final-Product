@@ -57,16 +57,23 @@ function AuthContextProvider(props) {
         }
     }
 
-    auth.logoutUser = async function () {
-        const response = await api.logoutUser();
-        if (response.status === 200) {
-            authReducer({
-                type: AuthActionType.GET_LOGGED_IN,
-                payload: {
-                    loggedIn: response.data.loggedIn,
-                    user: response.data.user
-                }
-            });
+    auth.logoutUser = async function (store) {
+        try{
+            const response = await api.logoutUser();
+            if (response.status === 200) {
+                authReducer({
+                    type: AuthActionType.GET_LOGGED_IN,
+                    payload: {
+                        loggedIn: response.data.loggedIn,
+                        user: response.data.user
+                    }
+                });
+            }
+        }
+        catch(Exception){
+            console.log("Exception caught!");
+            let errorMsg = "Something went wrong logging you out.";
+            store.setErrorMessage(errorMsg);
         }
     }
 
@@ -90,16 +97,22 @@ function AuthContextProvider(props) {
     }
 
     auth.registerUser = async function(userData, store) {
-        const response = await api.registerUser(userData);      
-        if (response.status === 200) {
-            authReducer({
-                type: AuthActionType.REGISTER_USER,
-                payload: {
-                    user: response.data.user
-                }
-            })
-            history.push("/");
-            store.loadIdNamePairs();
+        try{
+            const response = await api.registerUser(userData);      
+            if (response.status === 200) {
+                authReducer({
+                    type: AuthActionType.REGISTER_USER,
+                    payload: {
+                        user: response.data.user
+                    }
+                })
+                history.push("/");
+                store.loadIdNamePairs();
+            }
+        }
+        catch(Exception){
+            let errorMsg = Exception.response.data.errorMessage;
+            store.setErrorMessage(errorMsg);
         }
     }
 
@@ -121,9 +134,10 @@ function AuthContextProvider(props) {
                 history.push("/");
                 store.loadIdNamePairs();
             }
-        }catch (Exception){
-            console.log(Exception);
-            console.log("Exception caught while calling the api.loginUser");
+        }catch(Exception){
+            console.log("Exception caught!");
+            let errorMsg = Exception.response.data.errorMessage;
+            store.setErrorMessage(errorMsg);
         }
     }
 
