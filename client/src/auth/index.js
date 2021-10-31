@@ -23,7 +23,9 @@ function AuthContextProvider(props) {
     const [alertContent, setAlertContent] = useState('');
 
     useEffect(() => {
+        //if(auth.loggedIn){
         auth.getLoggedIn();
+        //}
     }, []);
 
     const authReducer = (action) => {
@@ -70,15 +72,20 @@ function AuthContextProvider(props) {
 
 
     auth.getLoggedIn = async function () {
-        const response = await api.getLoggedIn();
-        if (response.status === 200) {
-            authReducer({
-                type: AuthActionType.GET_LOGGED_IN,
-                payload: {
-                    loggedIn: response.data.loggedIn,
-                    user: response.data.user
-                }
-            });
+        try{
+            const response = await api.getLoggedIn();
+            if (response.status === 200) {
+                authReducer({
+                    type: AuthActionType.GET_LOGGED_IN,
+                    payload: {
+                        loggedIn: response.data.loggedIn,
+                        user: response.data.user
+                    }
+                });
+            }
+        }
+        catch{
+            console.log("Got an error from auth.getLoggedIn");
         }
     }
 

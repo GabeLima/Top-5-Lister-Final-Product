@@ -15,6 +15,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { GlobalStoreContext } from '../store'
+import AlertModal from './AlertModal'
 
 export default function LoginScreen() {
     const { auth } = useContext(AuthContext);
@@ -113,6 +114,7 @@ export default function LoginScreen() {
               </Box>
             </Grid>
           </Grid>
+          <AlertModal></AlertModal>
         </ThemeProvider>
       );
 }
