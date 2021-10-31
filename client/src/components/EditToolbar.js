@@ -39,7 +39,7 @@ function EditToolbar() {
         console.log("Something to undo");
         //undoClass = enabledButtonClass;
     }
-    else if(store.canRedo()){
+    if(store.canRedo()){
         cantRedo = false;
         console.log("Something to redo");
         //redoClass = enabledButtonClass;
