@@ -15,7 +15,7 @@ function Statusbar() {
     let pathName = history.location.pathname;
     console.log(pathName);
     if (store.currentList && store.listOpen)
-        text = store.currentList.name;
+        text = "Top 5 " + store.currentList.name;
     return (
         <div id="top5-statusbar">
             <Typography variant="h4">{text}</Typography>

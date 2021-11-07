@@ -22,12 +22,12 @@ function Top5Item(props) {
 
     function handleDragOver(event) {
         event.preventDefault();
+        setDraggedTo(true);
     }
 
     function handleDragEnter(event) {
         event.preventDefault();
         console.log("entering");
-        setDraggedTo(true);
     }
 
     function handleDragLeave(event) {
