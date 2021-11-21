@@ -11,7 +11,10 @@ getLoggedIn = async (req, res) => {
             user: {
                 firstName: loggedInUser.firstName,
                 lastName: loggedInUser.lastName,
-                email: loggedInUser.email
+                email: loggedInUser.email,
+                likedLists: loggedInUser.likedLists,
+                dislikedLists: loggedInUser.dislikedLists,
+                comments: loggedInUser.comments
             }
         }).send();
     })
@@ -29,7 +32,7 @@ logoutUser = async (req, res) => {
             secure: true,
             sameSite: "none"
         }).status(200).json({
-        }).send();
+        });
     } catch (err) {
         console.error(err);
         res.status(500).send();
@@ -40,6 +43,48 @@ logoutUser = async (req, res) => {
         }).send();
     })
 }
+
+updateUser = async (req, res) => {
+    const body = req.body
+    //console.log("updateUser: " + JSON.stringify(body));
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a body to update',
+        })
+    }
+    const { email} = req.body;
+    User.findOne({ email: email }, (err, user) => {
+        //console.log("top5List found: " + JSON.stringify(top5List));
+        if (err) {
+            return res.status(404).json({
+                err,
+                message: 'User not found when trying to update!',
+            })
+        }
+
+        // top5List.name = body.name
+        // //console.log("top5list name: ", body.name);
+        // top5List.items = body.items
+        user
+            .save()
+            .then(() => {
+                console.log("SUCCESS!!!");
+                return res.status(200).json({
+                    success: true,
+                    message: 'User updated!',
+                })
+            })
+            .catch(error => {
+                console.log("FAILURE: " + JSON.stringify(error));
+                return res.status(404).json({
+                    error,
+                    message: 'User not updated!',
+                })
+            })
+    })
+}
+
 
 function compareAsync(param1, param2) {
     return new Promise(function(resolve, reject) {
@@ -106,7 +151,10 @@ loginUser = async (req, res) => {
                         user: {
                             firstName: loggedInUser.firstName,
                             lastName: loggedInUser.lastName,
-                            email: loggedInUser.email
+                            email: loggedInUser.email,
+                            likedLists: loggedInUser.likedLists,
+                            dislikedLists: loggedInUser.dislikedLists,
+                            comments: loggedInUser.comments
                         }
                     }).send();
                 }catch (err) {
@@ -121,7 +169,10 @@ loginUser = async (req, res) => {
                 user: {
                     firstName: loggedInUser.firstName,
                     lastName: loggedInUser.lastName,
-                    email: loggedInUser.email
+                    email: loggedInUser.email,
+                    likedLists: loggedInUser.likedLists,
+                    dislikedLists: loggedInUser.dislikedLists,
+                    comments: loggedInUser.comments
                 }
             }).send();
     }catch(Exception){
@@ -166,8 +217,11 @@ registerUser = async (req, res) => {
         const salt = await bcrypt.genSalt(saltRounds);
         const passwordHash = await bcrypt.hash(password, salt);
 
+        let likedLists = []
+        let dislikedLists = []
+        let comments = []
         const newUser = new User({
-            firstName, lastName, email, passwordHash
+            firstName, lastName, email, passwordHash, likedLists, dislikedLists, comments
         });
         const savedUser = await newUser.save();
         console.log("newUser: ", newUser);
@@ -184,7 +238,10 @@ registerUser = async (req, res) => {
             user: {
                 firstName: savedUser.firstName,
                 lastName: savedUser.lastName,
-                email: savedUser.email
+                email: savedUser.email,
+                likedLists: savedUser.likedLists,
+                dislikedLists: savedUser.dislikedLists,
+                comments: savedUser.comments
             }
         }).send();
     } catch (err) {
