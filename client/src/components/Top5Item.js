@@ -67,7 +67,7 @@ function Top5Item(props) {
             if(text !== ""){
                 let id = event.target.id.substring("list-".length);
                 if(store.currentList.items[id-1] !== text){
-                    store.addUpdateItemTransaction(id-1, text);
+                    store.updateItem(id-1, text);
                 }
             }
             toggleEdit();
@@ -80,7 +80,7 @@ function Top5Item(props) {
             if(text !== ""){
                 let id = event.target.id.substring("list-".length);
                 if(store.currentList.items[id-1] !== text){
-                    store.addUpdateItemTransaction(id-1, text);
+                    store.updateItem(id-1, text);
                 }
             }
             toggleEdit();
@@ -98,22 +98,7 @@ function Top5Item(props) {
         id={'item-' + (index+1)}
         //key={props.key}
         className={itemClass}
-        onDragStart={(event) => {
-            handleDragStart(event, (index+1))
-        }}
-        onDragOver={(event) => {
-            handleDragOver(event, (index+1))
-        }}
-        onDragEnter={(event) => {
-            handleDragEnter(event, (index+1))
-        }}
-        onDragLeave={(event) => {
-            handleDragLeave(event, (index+1))
-        }}
-        onDrop={(event) => {
-            handleDrop(event, (index+1))
-        }}
-        draggable="true"
+        draggable="false"
         sx={{ display: 'flex', p: 1 }}
         style={{
             fontSize: '48pt',

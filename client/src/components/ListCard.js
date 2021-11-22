@@ -65,19 +65,31 @@ function ListCard(props) {
         toggleEdit();
     }
 
+    function handleSelectUser() {
+        console.log("HAVE TO IMPLEMENT THIS- SELECTING A USER FROM LISTS");
+    }
+
     function handleUpdateText(event) {
         setText(event.target.value);
     }
+    let isPublished = idNamePair.published;
+    if(isPublished !== "false"){
+        isPublished = true;
+    }
+    else{
+        isPublished = false;
+    }
+
     let cardElement =
         <ListItem
             id={idNamePair._id}
             key={idNamePair._id}
             sx={{ marginTop: '-15px', display: 'flex', p: 1 }}
-            button
-            onClick={(event) => {
-                handleLoadList(event, idNamePair._id)
-            }
-            }
+            //button
+            // onClick={(event) => {
+            //     handleLoadList(event, idNamePair._id)
+            // }
+            // }
             style={{
                 fontSize: '20pt',
                 width: '100%',
@@ -88,17 +100,25 @@ function ListCard(props) {
                 <Box sx={{ p: 2, flexGrow: 1, marginTop:'-0%' }}>
                     {idNamePair.name}
                     <div id="list-card-by-text">
-                        by:
-                        <span id="list-card-by-text-colored">
-                             {" " + idNamePair.ownerEmail}
+                        {"By: "}
+                        <span id="list-card-by-text-colored" onClick = {handleSelectUser}>
+                             {idNamePair.ownerEmail}
                         </span> 
                     </div>
-                    
-                </Box>
-                <Box sx={{ p: 1 }}>
-                    <IconButton onClick={handleToggleEdit} aria-label='edit'>
-                        <EditIcon style={{fontSize:'48pt'}} />
-                    </IconButton>
+                    {isPublished ?
+                        
+                        <span id="list-card-by-text">
+                            {"Published: "}
+                            <span id="list-card-published-color">
+                                {idNamePair.published}
+                            </span>
+                        </span> 
+                            : 
+                            <span id="list-card-not-published-color" onClick={(event) => {handleLoadList(event, idNamePair._id)}}>
+                                {"Edit"}
+                            </span>
+                            }
+
                 </Box>
                 <Box sx={{ p: 1 }}>
                     <IconButton onClick={(event) => {

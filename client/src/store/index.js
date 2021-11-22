@@ -174,7 +174,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE: {
                 return setStore({
                     idNamePairs: store.idNamePairs,
-                    currentList: payload,
+                    currentList: store.currentList,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: true,
                     isItemEditActive: false,
@@ -515,9 +515,17 @@ function GlobalStoreContextProvider(props) {
     //UPDATE THE ITEM WE'RE EDITING
     store.updateItem = function (index, newItem) {
         store.currentList.items[index] = newItem;
-        store.updateCurrentList();
+        store.updateListsWithoutSaving();
+    }
+    //Useful for updating our top5Items without them hitting the save button
+    store.updateListsWithoutSaving = function () {
+        storeReducer({
+            type: GlobalStoreActionType.SET_CURRENT_LIST,
+            payload: store.currentList
+        });
     }
 
+    //actually saves the items.
     store.updateCurrentList = async function () {
         const response = await api.updateTop5ListById(store.currentList._id, store.currentList);
         if (response.data.success) {

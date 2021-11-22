@@ -148,10 +148,10 @@ body {
 #top5-workspace {
   position: absolute;
   left: 0%;
-  top: 10%;
+  top: 7.5%;
   width: 100%;
   height: 80%;
-  background-color: var(--swatch-accent);
+  background-color: var(--swatch-complement);
 }
 
 #top5-statusbar {
@@ -229,8 +229,21 @@ body {
 #list-card-by-text-colored {
   font-size: 15pt;
   color:blueviolet;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
+#list-card-published-color {
+  font-size: 15pt;
+  color:green;
+}
+
+#list-card-not-published-color {
+  font-size: 15pt;
+  color:red;
+  text-decoration: underline;
+  cursor: pointer;
+}
 
 .list-card:aria-disabled,
 .list-card[aria-disabled] {
@@ -270,20 +283,43 @@ body {
 }
 
 #edit-numbering {
-  position: absolute;
+  position: relative;
   left: 0%;
   top: 0%;
   width: 20%;
-  height: 100%;
+  height: 80%;
   background-color: var(--swatch-status);
 }
 
+#edit-list-name{
+  position:relative;
+  margin-top:0%;
+  font-size: 24pt;
+  /* height:15%; */
+  top:0%;
+  background-color: #d8d4f4;
+}
+
+#save-publish{
+  position:relative;
+  width:100%;
+  /* display:flex; */
+  font-size: 24pt;
+  top:93%;
+  height: 10%;
+  background-color: #d8d4f4;
+}
+#save-publish-buttons{
+  position:relative;
+  left:85%;
+}
+
 #edit-items {
-  position: absolute;
+  position: relative;
   left: 20%;
-  top: 0%;
+  top: -79.5%;
   width: 80%;
-  height: 100%;
+  height: 78%;
   background-color: var(--swatch-complement);
 }
 
@@ -304,6 +340,19 @@ body {
   background-color: linen;
   color: black;
 }
+
+/* .list-name-bar{
+  display: flex;
+  align-items: center;
+  font-size: 48pt;
+  height: 20%;
+  justify-content: center;
+  width: 100%;
+  border: 1px 0px 1px 1px;
+  border-color: black;
+  background-color: linen;
+  color: black;
+} */
 
 input {
   font-size: 20pt;
