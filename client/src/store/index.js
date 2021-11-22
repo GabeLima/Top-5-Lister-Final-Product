@@ -25,6 +25,7 @@ export const GlobalStoreActionType = {
     MARK_LIST_FOR_DELETION: "MARK_LIST_FOR_DELETION",
     UNMARK_LIST_FOR_DELETION: "UNMARK_LIST_FOR_DELETION",
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
+    SET_CURRENT_LIST_ITEM_EDITED: "SET_CURRENT_LIST_ITEM_EDITED",
     SET_ITEM_EDIT_ACTIVE: "SET_ITEM_EDIT_ACTIVE",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
     SET_ERROR_MESSAGE: "SET_ERROR_MESSAGE",
@@ -54,7 +55,8 @@ function GlobalStoreContextProvider(props) {
         onYourListsPage: false,
         onAllListsPage: false,
         onUserListsPage: false,
-        onCommunityListsPage: false
+        onCommunityListsPage: false,
+        listHasBeenEdited: false
     });
     const history = useHistory();
 
@@ -89,7 +91,8 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     errorMessage: null,
-                    listOpen: false
+                    listOpen: false,
+                    listHasBeenEdited:false
                 })
             }
             // CREATE A NEW LIST
@@ -115,7 +118,8 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     errorMessage: null,
-                    listOpen: false
+                    listOpen: false,
+                    listHasBeenEdited:false
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -128,7 +132,8 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: payload,
                     errorMessage: null,
-                    listOpen: false
+                    listOpen: false,
+                    listHasBeenEdited:false
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -141,7 +146,8 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     errorMessage: null,
-                    listOpen: false
+                    listOpen: false,
+                    listHasBeenEdited:false
                 });
             }
             // UPDATE A LIST
@@ -154,7 +160,22 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     errorMessage: null,
-                    listOpen: true
+                    listOpen: true,
+                    listHasBeenEdited:false
+                });
+            }
+            // UPDATE A LIST AND THE LIST HAS BEEN EDITED
+            case GlobalStoreActionType.SET_CURRENT_LIST_ITEM_EDITED: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: payload,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: false,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: null,
+                    errorMessage: null,
+                    listOpen: true,
+                    listHasBeenEdited:true
                 });
             }
             // START EDITING A LIST ITEM
@@ -167,7 +188,8 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: true,
                     listMarkedForDeletion: null,
                     errorMessage: null,
-                    listOpen: store.listOpen
+                    listOpen: store.listOpen,
+                    listHasBeenEdited:store.listHasBeenEdited
                 });
             }
             // START EDITING A LIST NAME
@@ -192,7 +214,8 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null,
                     errorMessage: payload,
-                    listOpen: store.listOpen
+                    listOpen: store.listOpen,
+                    listHasBeenEdited:false
                 });
             }
             //NOW FOR SWITCHING BETWEEN THE VARIOUS LISTS TYPES WE HAVE:
@@ -209,7 +232,8 @@ function GlobalStoreContextProvider(props) {
                     onYourListsPage: true,
                     onAllListsPage: false,
                     onUserListsPage: false,
-                    onCommunityListsPage: false
+                    onCommunityListsPage: false,
+                    listHasBeenEdited:false
                 });
             }
             case GlobalStoreActionType.ON_ALL_LISTS: {
@@ -225,7 +249,8 @@ function GlobalStoreContextProvider(props) {
                     onYourListsPage: false,
                     onAllListsPage: true,
                     onUserListsPage: false,
-                    onCommunityListsPage: false
+                    onCommunityListsPage: false,
+                    listHasBeenEdited:false
                 });
             }
             case GlobalStoreActionType.ON_USER_LISTS: {
@@ -241,7 +266,8 @@ function GlobalStoreContextProvider(props) {
                     onYourListsPage: false,
                     onAllListsPage: false,
                     onUserListsPage: true,
-                    onCommunityListsPage: false
+                    onCommunityListsPage: false,
+                    listHasBeenEdited:false
                 });
             }
             case GlobalStoreActionType.ON_COMMUNITY_LISTS: {
@@ -257,7 +283,8 @@ function GlobalStoreContextProvider(props) {
                     onYourListsPage: false,
                     onAllListsPage: false,
                     onUserListsPage: false,
-                    onCommunityListsPage: true
+                    onCommunityListsPage: true,
+                    listHasBeenEdited:false
                 });
             }
             default:
@@ -342,7 +369,7 @@ function GlobalStoreContextProvider(props) {
         console.log("Creating a new list, user email: ", auth.user.email);
         let payload = {
             name: newListName,
-            items: ["?", "?", "?", "?", "?"],
+            items: ["", "", "", "", ""],
             ownerEmail: auth.user.email,
             published: "false"
         };
@@ -520,7 +547,7 @@ function GlobalStoreContextProvider(props) {
     //Useful for updating our top5Items without them hitting the save button
     store.updateListsWithoutSaving = function () {
         storeReducer({
-            type: GlobalStoreActionType.SET_CURRENT_LIST,
+            type: GlobalStoreActionType.SET_CURRENT_LIST_ITEM_EDITED,
             payload: store.currentList
         });
     }
@@ -529,6 +556,7 @@ function GlobalStoreContextProvider(props) {
     store.updateCurrentList = async function () {
         const response = await api.updateTop5ListById(store.currentList._id, store.currentList);
         if (response.data.success) {
+            store.listHasBeenEdited = false;
             storeReducer({
                 type: GlobalStoreActionType.SET_CURRENT_LIST,
                 payload: store.currentList

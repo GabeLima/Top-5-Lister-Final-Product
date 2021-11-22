@@ -16,38 +16,6 @@ function Top5Item(props) {
     const [editActive, setEditActive] = useState(false);
     const [draggedTo, setDraggedTo] = useState(0);
 
-    function handleDragStart(event, targetId) {
-        event.dataTransfer.setData("item", targetId);
-    }
-
-    function handleDragOver(event) {
-        event.preventDefault();
-        setDraggedTo(true);
-    }
-
-    function handleDragEnter(event) {
-        event.preventDefault();
-        console.log("entering");
-    }
-
-    function handleDragLeave(event) {
-        event.preventDefault();
-        console.log("leaving");
-        setDraggedTo(false);
-    }
-
-    function handleDrop(event, targetId) {
-        event.preventDefault();
-        let sourceId = event.dataTransfer.getData("item");
-        sourceId = sourceId.substring(sourceId.indexOf("-") + 1);
-        setDraggedTo(false);
-
-        console.log("handleDrop (sourceId, targetId): ( " + sourceId + ", " + targetId + ")");
-
-        // UPDATE THE LIST
-        store.addMoveItemTransaction(sourceId, targetId);
-    }
-
     function handleToggleEdit(event) {
         event.stopPropagation();
         toggleEdit();

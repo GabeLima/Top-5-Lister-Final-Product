@@ -38,6 +38,9 @@ function WorkspaceScreen() {
         toggleEdit();
     }
     function handleUpdateText(event) {
+        if(event.target.value !== "" && event.target.value !== store.currentList.name){
+            store.listHasBeenEdited = true;
+        }
         setText(event.target.value);
     }
     function handleClose() {
@@ -46,14 +49,47 @@ function WorkspaceScreen() {
     function onSave(){
         if(text!=""){
             store.currentList.name = text;
-            //Save the list name if we changed that...
-            //store.changeListName(store.currentList._id, text);
         }
+        //update the list
         store.updateCurrentList();
-        //save the items... how?
-
         //And then exit back to the home screen
         handleClose();
+    }
+
+    function onPublish(){
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth()).padStart(2, '0');
+        var yyyy = today.getFullYear();
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+        ];
+        today = monthNames[mm] + " " + dd + ", " + yyyy;
+        store.currentList.published = String(today);
+        console.log("currentList after setting published date: " + store.currentList.published);
+        store.updateCurrentList();
+        handleClose();
+    }
+
+    function haveChangesBeenMade(){
+        return !store.listHasBeenEdited;
+    }
+
+    function canWePublish(){
+        if(store.currentList === null){
+            return true;
+        }
+        let items = store.currentList.items;
+        for(let i = 0; i < items.length; i ++){
+            if(items[i] === ""){
+                return true;
+            }
+        }
+        if(store.currentList.name === ""){
+            return true;
+        }
+        //Otherwise do any of our published lists match our currentLists name?
+        return false;
     }
 
 
@@ -112,7 +148,7 @@ function WorkspaceScreen() {
                         <Button 
                             id='save-button'
                             size="large"
-                            // disabled = {cantUndo}
+                            disabled = {haveChangesBeenMade()}
                             onClick={onSave}
                             variant="outlined">
                             Save
@@ -120,8 +156,8 @@ function WorkspaceScreen() {
                         <Button 
                             id='publish-button'
                             size="large"
-                            // disabled = {cantUndo}
-                            // onClick={handleUndo}
+                            disabled = {canWePublish()}
+                            onClick={onPublish}
                             variant="outlined">
                             Publish
                         </Button>
