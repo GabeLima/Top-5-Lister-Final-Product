@@ -59,7 +59,7 @@ const HomeScreen = () => {
             >
                 <AddIcon />
             </Fab>
-                <Typography variant="h2">Your Lists</Typography>
+                <Typography variant="h2">TO BE CHANGED</Typography>
             </div>
             <div id="list-selector-list">
                 {

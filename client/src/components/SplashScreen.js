@@ -1,6 +1,4 @@
-import { Fab, Typography } from '@mui/material'
-import LoginIcon from '@mui/icons-material/Login';
-import { Link } from 'react-router-dom'
+import { Fab} from '@mui/material'
 import { useHistory } from 'react-router-dom'
 export default function SplashScreen() {
     const history = useHistory();

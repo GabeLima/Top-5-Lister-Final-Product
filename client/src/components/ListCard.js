@@ -72,18 +72,29 @@ function ListCard(props) {
         <ListItem
             id={idNamePair._id}
             key={idNamePair._id}
-            sx={{ marginTop: '15px', display: 'flex', p: 1 }}
+            sx={{ marginTop: '-15px', display: 'flex', p: 1 }}
             button
             onClick={(event) => {
                 handleLoadList(event, idNamePair._id)
             }
             }
             style={{
-                fontSize: '48pt',
-                width: '100%'
+                fontSize: '20pt',
+                width: '100%',
+                top:"0px"
+                //marginTop:'0%'
             }}
-        >
-                <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
+        > 
+                <Box sx={{ p: 2, flexGrow: 1, marginTop:'-0%' }}>
+                    {idNamePair.name}
+                    <div id="list-card-by-text">
+                        by:
+                        <span id="list-card-by-text-colored">
+                             {" " + idNamePair.ownerEmail}
+                        </span> 
+                    </div>
+                    
+                </Box>
                 <Box sx={{ p: 1 }}>
                     <IconButton onClick={handleToggleEdit} aria-label='edit'>
                         <EditIcon style={{fontSize:'48pt'}} />

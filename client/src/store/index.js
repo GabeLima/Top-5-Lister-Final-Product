@@ -27,7 +27,12 @@ export const GlobalStoreActionType = {
     SET_CURRENT_LIST: "SET_CURRENT_LIST",
     SET_ITEM_EDIT_ACTIVE: "SET_ITEM_EDIT_ACTIVE",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
-    SET_ERROR_MESSAGE: "SET_ERROR_MESSAGE"
+    SET_ERROR_MESSAGE: "SET_ERROR_MESSAGE",
+    ON_YOUR_LISTS: "ON_YOUR_LISTS",
+    ON_ALL_LISTS: "ON_ALL_LISTS",
+    ON_USER_LISTS: "ON_USER_LISTS",
+    ON_COMMUNITY_LISTS: "ON_COMMUNITY_LISTS"
+
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -43,9 +48,13 @@ function GlobalStoreContextProvider(props) {
         newListCounter: 0,
         listNameActive: false,
         itemActive: false,
-        listMarkedForDeletion: null,
+        isListNameEditActive: false,
         errorMessage: null,
-        listOpen: false
+        listOpen: false,
+        onYourListsPage: false,
+        onAllListsPage: false,
+        onUserListsPage: false,
+        onCommunityListsPage: false
     });
     const history = useHistory();
 
@@ -186,6 +195,71 @@ function GlobalStoreContextProvider(props) {
                     listOpen: store.listOpen
                 });
             }
+            //NOW FOR SWITCHING BETWEEN THE VARIOUS LISTS TYPES WE HAVE:
+            case GlobalStoreActionType.ON_YOUR_LISTS: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: store.isListNameEditActive,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: null,
+                    errorMessage: null,
+                    listOpen: false,
+                    onYourListsPage: true,
+                    onAllListsPage: false,
+                    onUserListsPage: false,
+                    onCommunityListsPage: false
+                });
+            }
+            case GlobalStoreActionType.ON_ALL_LISTS: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: store.isListNameEditActive,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: null,
+                    errorMessage: null,
+                    listOpen: false,
+                    onYourListsPage: false,
+                    onAllListsPage: true,
+                    onUserListsPage: false,
+                    onCommunityListsPage: false
+                });
+            }
+            case GlobalStoreActionType.ON_USER_LISTS: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: store.isListNameEditActive,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: null,
+                    errorMessage: null,
+                    listOpen: false,
+                    onYourListsPage: false,
+                    onAllListsPage: false,
+                    onUserListsPage: true,
+                    onCommunityListsPage: false
+                });
+            }
+            case GlobalStoreActionType.ON_COMMUNITY_LISTS: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: store.isListNameEditActive,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: null,
+                    errorMessage: null,
+                    listOpen: false,
+                    onYourListsPage: false,
+                    onAllListsPage: false,
+                    onUserListsPage: false,
+                    onCommunityListsPage: true
+                });
+            }
             default:
                 return store;
         }
@@ -269,7 +343,8 @@ function GlobalStoreContextProvider(props) {
         let payload = {
             name: newListName,
             items: ["?", "?", "?", "?", "?"],
-            ownerEmail: auth.user.email
+            ownerEmail: auth.user.email,
+            published: "false"
         };
         const response = await api.createTop5List(payload);
         if (response.data.success) {
