@@ -14,7 +14,8 @@ getLoggedIn = async (req, res) => {
                 email: loggedInUser.email,
                 likedLists: loggedInUser.likedLists,
                 dislikedLists: loggedInUser.dislikedLists,
-                comments: loggedInUser.comments
+                comments: loggedInUser.comments,
+                userName: loggedInUser.userName
             }
         }).send();
     })
@@ -112,22 +113,18 @@ loginUser = async (req, res) => {
                     .json({ errorMessage: "Please enter all required fields." });
             }
             console.log("Email we're querying by: ", email);
-            const loggedInUser = await User.findOne({ email: email });
+            var loggedInUser = await User.findOne({ email: email });
             console.log("loggedInUser: ", loggedInUser);
             //BREAK IF WE CAN'T FIND THE EMAIL
             if(loggedInUser === null){
-                return res
-                .status(400)
-                .json({ errorMessage: "Couldn't find an account with that email!"});
+                loggedInUser = await User.findOne({ userName: email });
+                if(loggedInUser === null){
+                    return res
+                    .status(400)
+                    .json({ errorMessage: "Couldn't find an account with that email!"});
+                }
             }
-            //need to check the password here
-            // await bcrypt.compare(password, loggedInUser.passwordHash, (err, result) => {
-            //     if (err) return callback(err);
-            //     if (!result){
-            //         console.log("Bad password!");
-            //         return res.status(400).json({ errorMessage: "Bad password!"});
-            //     }
-            // });
+
             var result = await compareAsync(password, loggedInUser.passwordHash);
             console.log(result);
             if(!result){
@@ -154,7 +151,8 @@ loginUser = async (req, res) => {
                             email: loggedInUser.email,
                             likedLists: loggedInUser.likedLists,
                             dislikedLists: loggedInUser.dislikedLists,
-                            comments: loggedInUser.comments
+                            comments: loggedInUser.comments,
+                            userName: loggedInUser.userName
                         }
                     }).send();
                 }catch (err) {
@@ -172,7 +170,8 @@ loginUser = async (req, res) => {
                     email: loggedInUser.email,
                     likedLists: loggedInUser.likedLists,
                     dislikedLists: loggedInUser.dislikedLists,
-                    comments: loggedInUser.comments
+                    comments: loggedInUser.comments,
+                    userName: loggedInUser.userName
                 }
             }).send();
     }catch(Exception){
@@ -183,7 +182,7 @@ loginUser = async (req, res) => {
 registerUser = async (req, res) => {
     try {
         console.log("Attempting to register the user");
-        const { firstName, lastName, email, password, passwordVerify } = req.body;
+        const { firstName, lastName, email, password, passwordVerify, userName } = req.body;
         if (!firstName || !lastName || !email || !password || !passwordVerify) {
             return res
                 .status(400)
@@ -213,6 +212,16 @@ registerUser = async (req, res) => {
                 })
         }
 
+        const existingUserName = await User.findOne({ userName: userName });
+        if (existingUserName) {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    errorMessage: "That username already exists!"
+                })
+        }
+
         const saltRounds = 10;
         const salt = await bcrypt.genSalt(saltRounds);
         const passwordHash = await bcrypt.hash(password, salt);
@@ -221,7 +230,7 @@ registerUser = async (req, res) => {
         let dislikedLists = []
         let comments = []
         const newUser = new User({
-            firstName, lastName, email, passwordHash, likedLists, dislikedLists, comments
+            firstName, lastName, email, passwordHash, likedLists, dislikedLists, comments, userName
         });
         const savedUser = await newUser.save();
         console.log("newUser: ", newUser);
@@ -241,7 +250,8 @@ registerUser = async (req, res) => {
                 email: savedUser.email,
                 likedLists: savedUser.likedLists,
                 dislikedLists: savedUser.dislikedLists,
-                comments: savedUser.comments
+                comments: savedUser.comments,
+                userName: savedUser.userName
             }
         }).send();
     } catch (err) {

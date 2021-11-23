@@ -366,12 +366,13 @@ function GlobalStoreContextProvider(props) {
             }
         }
         let newListName = "Untitled List " + store.newListCounter;
-        console.log("Creating a new list, user email: ", auth.user.email);
+        console.log("Creating a new list, user Name: ", auth.user);
         let payload = {
             name: newListName,
             items: ["", "", "", "", ""],
             ownerEmail: auth.user.email,
-            published: "false"
+            published: "false",
+            userName: auth.user.userName
         };
         const response = await api.createTop5List(payload);
         if (response.data.success) {

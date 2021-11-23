@@ -10,7 +10,8 @@ const UserSchema = new Schema(
         passwordHash: { type: String, required: true },
         likedLists: {type: [String], required: true},
         dislikedLists: {type: [String], required: true},
-        comments: {type: [String], required: true}
+        comments: {type: [String], required: true},
+        userName: {type: String, required: true}
     },
     { timestamps: true },
 )

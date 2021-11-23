@@ -102,7 +102,7 @@ function ListCard(props) {
                     <div id="list-card-by-text">
                         {"By: "}
                         <span id="list-card-by-text-colored" onClick = {handleSelectUser}>
-                             {idNamePair.ownerEmail}
+                             {idNamePair.userName}
                         </span> 
                     </div>
                     {isPublished ?
