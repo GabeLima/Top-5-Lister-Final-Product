@@ -50,11 +50,17 @@ function ListCard(props) {
 
     function handleKeyPress(event) {
         if (event.code === "Enter" || event.code === "NumpadEnter") {
-            if(text !== ""){
-                let id = event.target.id.substring("list-".length);
-                store.changeListName(id, text);
+            if(event.target.value !== ""){
+                let newComment = [idNamePair.userName, event.target.value];
+
+                store.currentList.comments.push(newComment);
+                console.log("Creating a comment for comment: " + event.target.value);
+                document.getElementById("comment-bar").value = "";
+                store.updateCurrentList();
+                // let id = event.target.id.substring("list-".length);
+                // store.changeListName(id, text);
             }
-            toggleEdit();
+            // toggleEdit();
         }
     }
 
@@ -67,12 +73,20 @@ function ListCard(props) {
         toggleEdit();
     }
 
-    function handleSelectUser() {
+    function handleSelectUser(event, userName) {
+        //alert(event.target);
+        //store.setUserListsView();
+        document.getElementById("search-bar").value = userName;
         console.log("HAVE TO IMPLEMENT THIS- SELECTING A USER FROM LISTS");
     }
 
     function handleUpdateText(event) {
         setText(event.target.value);
+    }
+    let isOpen = false;
+    function setNewListCardId(event) {
+        store.setCurrentListWithoutChangingPage(idNamePair._id);
+        store.setListCardExpanded(idNamePair._id);
     }
     let isPublished = idNamePair.published;
     if(isPublished !== "false"){
@@ -81,6 +95,11 @@ function ListCard(props) {
     else{
         isPublished = false;
     }
+    // let comments = <ul></ul>;
+    // if(store.idNamePairs.comments.length > 0){
+
+    // }
+    
 
     let cardElement =
         <ListItem
@@ -88,6 +107,7 @@ function ListCard(props) {
             key={idNamePair._id}
             sx={{ marginTop: '-15px', display: 'flex', p: 1 }}
             //button
+            onClick={setNewListCardId}
             // onClick={(event) => {
             //     handleLoadList(event, idNamePair._id)
             // }
@@ -103,10 +123,62 @@ function ListCard(props) {
                     {idNamePair.name}
                     <div id="list-card-by-text">
                         {"By: "}
-                        <span id="list-card-by-text-colored" onClick = {handleSelectUser}>
+                        <span id="list-card-by-text-colored" onClick = {(event)=> handleSelectUser(event, idNamePair.userName)}>
                              {idNamePair.userName}
                         </span> 
                     </div>
+                    {store.listcardExpanded!= null && store.listcardExpanded == idNamePair._id? 
+                    <div class="items-and-comments-container">
+                        <ol id="list-card-items">
+                           <li>{idNamePair.items[0]}</li>
+                           <li>{idNamePair.items[1]}</li>
+                           <li>{idNamePair.items[2]}</li>
+                           <li>{idNamePair.items[3]}</li>
+                           <li>{idNamePair.items[4]}</li>
+                        </ol>
+                        <div id="list-card-comments" >
+                            <ul id="list-card-comments" style={{listStyleType:"none", padding: 0, width:"100%"}}>
+                                {idNamePair.comments.map(
+                                    p => 
+                                    <li>
+                                        <li id="list-card-comments-user" onClick = {(event)=> handleSelectUser(event, idNamePair.userName)}>
+                                        {p[0]}
+                                        </li>
+                                        <li id="list-card-comments-comment">
+                                            {"-" + p[1]}
+                                        </li>
+                                    </li>)
+                                    }
+                            {/* store.idNamePairs.map((pair) => (
+                                <li
+                                    key={pair._id}
+                                    idNamePair={pair}
+                                    selected={false}
+                                />
+                                )) */}
+                                {/* <li>{idNamePair.items[0]}</li>
+                                <li>{idNamePair.items[1]}</li>
+                                <li>{idNamePair.items[2]}</li>
+                                <li>{idNamePair.items[3]}</li>
+                                <li>{idNamePair.items[4]}</li> */}
+                            </ul>
+                            <input
+                                type="text"
+                                id="comment-bar"
+                                placeholder={"Add a comment!"}
+                                style={{width: "98%", height:"70%"}}
+                                onKeyPress = {handleKeyPress}
+                                //onChange={handleChange}
+                                //onLoad={handleChange}
+                            />
+                        </div>
+                    </div>
+                        :
+                    
+                    
+                    
+                        <span></span>
+                    }
                     {isPublished ?
                         
                         <span id="list-card-by-text">
@@ -145,7 +217,7 @@ function ListCard(props) {
                 name="name"
                 autoComplete="Top 5 List Name"
                 className='list-card'
-                onKeyPress={handleKeyPress}
+                //onKeyPress={handleKeyPress}
                 onChange={handleUpdateText}
                 onBlur = {handleOnBlur}
                 defaultValue={idNamePair.name}

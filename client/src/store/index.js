@@ -32,7 +32,8 @@ export const GlobalStoreActionType = {
     ON_YOUR_LISTS: "ON_YOUR_LISTS",
     ON_ALL_LISTS: "ON_ALL_LISTS",
     ON_USER_LISTS: "ON_USER_LISTS",
-    ON_COMMUNITY_LISTS: "ON_COMMUNITY_LISTS"
+    ON_COMMUNITY_LISTS: "ON_COMMUNITY_LISTS",
+    NEW_LIST_CARD: "NEW_LIST_CARD"
 
 }
 
@@ -44,6 +45,7 @@ let localOnAllLists = false;
 let localOnUserLists = false;
 let localOnCommunityLists = false;
 let localSearchText = "";
+let localListCardId = null;
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
 // AVAILABLE TO THE REST OF THE APPLICATION
@@ -62,7 +64,8 @@ function GlobalStoreContextProvider(props) {
         onAllListsPage: false,
         onUserListsPage: false,
         onCommunityListsPage: false,
-        listHasBeenEdited: false
+        listHasBeenEdited: false,
+        listcardExpanded:null
     });
     const history = useHistory();
 
@@ -88,7 +91,8 @@ function GlobalStoreContextProvider(props) {
                     onYourListsPage: store.onYourListsPage,
                     onUserListsPage: store.onUserListsPage,
                     onAllListsPage: store.onAllListsPage,
-                    onCommunityListsPage: store.onCommunityListsPage
+                    onCommunityListsPage: store.onCommunityListsPage,
+                    listcardExpanded: null
                 });
             }
             // STOP EDITING THE CURRENT LIST
@@ -106,7 +110,8 @@ function GlobalStoreContextProvider(props) {
                     onYourListsPage: store.onYourListsPage,
                     onUserListsPage: store.onUserListsPage,
                     onAllListsPage: store.onAllListsPage,
-                    onCommunityListsPage: store.onCommunityListsPage
+                    onCommunityListsPage: store.onCommunityListsPage,
+                    listcardExpanded: null
                 })
             }
             // CREATE A NEW LIST
@@ -123,7 +128,8 @@ function GlobalStoreContextProvider(props) {
                     onYourListsPage: store.onYourListsPage,
                     onUserListsPage: store.onUserListsPage,
                     onAllListsPage: store.onAllListsPage,
-                    onCommunityListsPage: store.onCommunityListsPage
+                    onCommunityListsPage: store.onCommunityListsPage,
+                    listcardExpanded: null
                 })
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -141,7 +147,8 @@ function GlobalStoreContextProvider(props) {
                     onYourListsPage: localOnYourLists,
                     onUserListsPage: localOnUserLists,
                     onAllListsPage: localOnAllLists,
-                    onCommunityListsPage: localOnCommunityLists
+                    onCommunityListsPage: localOnCommunityLists,
+                    listcardExpanded: null
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -159,7 +166,8 @@ function GlobalStoreContextProvider(props) {
                     onYourListsPage: store.onYourListsPage,
                     onUserListsPage: store.onUserListsPage,
                     onAllListsPage: store.onAllListsPage,
-                    onCommunityListsPage: store.onCommunityListsPage
+                    onCommunityListsPage: store.onCommunityListsPage,
+                    listcardExpanded: null
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -177,7 +185,8 @@ function GlobalStoreContextProvider(props) {
                     onYourListsPage: store.onYourListsPage,
                     onUserListsPage: store.onUserListsPage,
                     onAllListsPage: store.onAllListsPage,
-                    onCommunityListsPage: store.onCommunityListsPage
+                    onCommunityListsPage: store.onCommunityListsPage,
+                    listcardExpanded: null
                 });
             }
             // UPDATE A LIST
@@ -195,7 +204,8 @@ function GlobalStoreContextProvider(props) {
                     onYourListsPage: store.onYourListsPage,
                     onUserListsPage: store.onUserListsPage,
                     onAllListsPage: store.onAllListsPage,
-                    onCommunityListsPage: store.onCommunityListsPage
+                    onCommunityListsPage: store.onCommunityListsPage,
+                    listcardExpanded: localListCardId
                 });
             }
             // UPDATE A LIST AND THE LIST HAS BEEN EDITED
@@ -213,7 +223,8 @@ function GlobalStoreContextProvider(props) {
                     onYourListsPage: store.onYourListsPage,
                     onUserListsPage: store.onUserListsPage,
                     onAllListsPage: store.onAllListsPage,
-                    onCommunityListsPage: store.onCommunityListsPage
+                    onCommunityListsPage: store.onCommunityListsPage,
+                    listcardExpanded: null
                 });
             }
             // START EDITING A LIST ITEM
@@ -231,7 +242,8 @@ function GlobalStoreContextProvider(props) {
                     onYourListsPage: store.onYourListsPage,
                     onUserListsPage: store.onUserListsPage,
                     onAllListsPage: store.onAllListsPage,
-                    onCommunityListsPage: store.onCommunityListsPage
+                    onCommunityListsPage: store.onCommunityListsPage,
+                    listcardExpanded: null
                 });
             }
             // START EDITING A LIST NAME
@@ -248,7 +260,8 @@ function GlobalStoreContextProvider(props) {
                     onYourListsPage: store.onYourListsPage,
                     onUserListsPage: store.onUserListsPage,
                     onAllListsPage: store.onAllListsPage,
-                    onCommunityListsPage: store.onCommunityListsPage
+                    onCommunityListsPage: store.onCommunityListsPage,
+                    listcardExpanded: null
                 });
             }
             case GlobalStoreActionType.SET_ERROR_MESSAGE: {
@@ -265,7 +278,8 @@ function GlobalStoreContextProvider(props) {
                     onYourListsPage: store.onYourListsPage,
                     onUserListsPage: store.onUserListsPage,
                     onAllListsPage: store.onAllListsPage,
-                    onCommunityListsPage: store.onCommunityListsPage
+                    onCommunityListsPage: store.onCommunityListsPage,
+                    listcardExpanded: null
                 });
             }
             //NOW FOR SWITCHING BETWEEN THE VARIOUS LISTS TYPES WE HAVE:
@@ -283,7 +297,8 @@ function GlobalStoreContextProvider(props) {
                     onAllListsPage: false,
                     onUserListsPage: false,
                     onCommunityListsPage: false,
-                    listHasBeenEdited:false
+                    listHasBeenEdited:false,
+                    listcardExpanded: null
                 });
             }
             case GlobalStoreActionType.ON_ALL_LISTS: {
@@ -300,7 +315,8 @@ function GlobalStoreContextProvider(props) {
                     onAllListsPage: true,
                     onUserListsPage: false,
                     onCommunityListsPage: false,
-                    listHasBeenEdited:false
+                    listHasBeenEdited:false,
+                    listcardExpanded: null
                 });
             }
             case GlobalStoreActionType.ON_USER_LISTS: {
@@ -317,7 +333,8 @@ function GlobalStoreContextProvider(props) {
                     onAllListsPage: false,
                     onUserListsPage: true,
                     onCommunityListsPage: false,
-                    listHasBeenEdited:false
+                    listHasBeenEdited:false,
+                    listcardExpanded: null
                 });
             }
             case GlobalStoreActionType.ON_COMMUNITY_LISTS: {
@@ -334,9 +351,29 @@ function GlobalStoreContextProvider(props) {
                     onAllListsPage: false,
                     onUserListsPage: false,
                     onCommunityListsPage: true,
-                    listHasBeenEdited:false
+                    listHasBeenEdited:false,
+                    listcardExpanded: null
                 });
             }
+            case GlobalStoreActionType.NEW_LIST_CARD: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: store.isListNameEditActive,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: null,
+                    errorMessage: null,
+                    listOpen: false,
+                    onYourListsPage: false,
+                    onAllListsPage: false,
+                    onUserListsPage: false,
+                    onCommunityListsPage: true,
+                    listHasBeenEdited:false,
+                    listcardExpanded: payload
+                });
+            }
+            
             default:
                 return store;
         }
@@ -422,7 +459,11 @@ function GlobalStoreContextProvider(props) {
             items: ["", "", "", "", ""],
             ownerEmail: auth.user.email,
             published: "false",
-            userName: auth.user.userName
+            userName: auth.user.userName,
+            comments: [],
+            likedBy: [],
+            dislikedBy:[],
+            views:'0'
         };
         const response = await api.createTop5List(payload);
         if (response.data.success) {
@@ -605,6 +646,28 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+
+    store.setCurrentListWithoutChangingPage = async function (id) {
+        localListCardId = id;
+        let response = await api.getTop5ListById(id);
+        if (response.data.success) {
+            let top5List = response.data.top5List;
+            //response = await api.updateTop5ListById(top5List._id, top5List);
+            //store.currentList = top5List;
+            storeReducer({
+                type: GlobalStoreActionType.SET_CURRENT_LIST,
+                payload: top5List
+            });
+            console.log("We set the current list without changing the page!");
+            // if (response.data.success) {
+            //     storeReducer({
+            //         type: GlobalStoreActionType.SET_CURRENT_LIST,
+            //         payload: top5List
+            //     });
+            // }
+        }
+    }
+
     store.addMoveItemTransaction = function (start, end) {
         let transaction = new MoveItem_Transaction(store, start, end);
         tps.addTransaction(transaction);
@@ -743,7 +806,12 @@ function GlobalStoreContextProvider(props) {
         localSearchText = text;
         store.loadIdNamePairs();
     }
-
+    store.setListCardExpanded = function(newListCardId){
+        storeReducer({
+            type: GlobalStoreActionType.NEW_LIST_CARD,
+            payload:newListCardId
+        });
+    }
 
     return (
         <GlobalStoreContext.Provider value={{

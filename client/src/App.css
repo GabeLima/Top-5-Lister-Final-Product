@@ -274,6 +274,53 @@ body {
   text-decoration: underline;
   cursor: pointer;
 }
+.items-and-comments-container {
+  position: relative;
+  padding: 0;
+  margin: 0;
+  word-wrap: break-word;
+  /* overflow-y: clip; */
+  /* background-color: #ff00ff; */
+}
+
+#list-card-items {
+  /* {color:"#cfa838", backgroundColor:"#302c74", width:"45%", position:"relative"} */
+  color: #cfa838;
+  background-color:#302c74;
+  font-weight: bold;
+  width:45%;
+  display: inline-block;
+  
+  /* left:54%;
+  top:-57%; */
+}
+
+
+#list-card-comments {
+  /* overflow-y: scroll; */
+  font-size: 15pt;
+  color:black;
+  background-color: #cfa838;
+  display: inline-block;
+  vertical-align: top;
+  width:45%;
+  word-wrap: break-word;
+  
+  /* left:54%;
+  top:-57%; */
+}
+#list-card-comments-user {
+  font-size: 15pt;
+  color:blueviolet;
+  text-decoration: underline;
+  cursor: pointer;
+}
+#list-card-comments-comment {
+  font-size: 20pt;
+  color:black;
+  width:200%;
+  word-wrap: break-word;
+}
 
 .list-card:aria-disabled,
 .list-card[aria-disabled] {

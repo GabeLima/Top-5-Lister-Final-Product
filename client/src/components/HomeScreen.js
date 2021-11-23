@@ -115,9 +115,11 @@ const HomeScreen = () => {
             </Fab>
             <input
                 type="text"
+                id="search-bar"
                 placeholder={"Search"}
                 style={{width: "50%", height:"70%"}}
                 onChange={handleChange}
+                onLoad={handleChange}
             />
             <span id="list-selector-heading-sort">
                 <Typography variant="h4" fontWeight='bold'>Sort By</Typography>
