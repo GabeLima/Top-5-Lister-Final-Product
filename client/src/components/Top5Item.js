@@ -14,7 +14,6 @@ import EditIcon from '@mui/icons-material/Edit';
 function Top5Item(props) {
     const { store } = useContext(GlobalStoreContext);
     const [editActive, setEditActive] = useState(false);
-    const [draggedTo, setDraggedTo] = useState(0);
 
     function handleToggleEdit(event) {
         event.stopPropagation();
@@ -57,9 +56,6 @@ function Top5Item(props) {
     let { index } = props;
 
     let itemClass = "top5-item";
-    if (draggedTo) {
-        itemClass = "top5-item-dragged-to";
-    }
 
     let itemElement = 
         <ListItem
