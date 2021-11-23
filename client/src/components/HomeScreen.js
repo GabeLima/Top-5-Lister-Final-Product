@@ -34,6 +34,9 @@ const HomeScreen = () => {
     function communityListsView(){
         store.setCommunityListsView();
     }
+    function handleChange(event){
+        store.setLocalSearchText(event.target.value);
+    }
 
     let defaultBackgroundColor = "#c8c4c4";
     let selectedBackgroundColor = "#2074d4"
@@ -114,7 +117,7 @@ const HomeScreen = () => {
                 type="text"
                 placeholder={"Search"}
                 style={{width: "50%", height:"70%"}}
-                // onChange={this.handleChange}
+                onChange={handleChange}
             />
             <span id="list-selector-heading-sort">
                 <Typography variant="h4" fontWeight='bold'>Sort By</Typography>

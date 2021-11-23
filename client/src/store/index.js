@@ -43,6 +43,7 @@ let localOnYourLists = true;
 let localOnAllLists = false;
 let localOnUserLists = false;
 let localOnCommunityLists = false;
+let localSearchText = "";
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
 // AVAILABLE TO THE REST OF THE APPLICATION
@@ -463,10 +464,9 @@ function GlobalStoreContextProvider(props) {
         if(localOnYourLists){
             for(let i = 0; i < pairsArray.length; i ++){
                 let newResponse = await api.getTop5ListById(pairsArray[i]._id);
-                console.log(newResponse);
                 if(newResponse.data.success){
                     let top5List = newResponse.data.top5List;
-                    if(top5List.ownerEmail === auth.user.email){
+                    if(top5List.ownerEmail === auth.user.email && store.startsWith(top5List.name)){
                         console.log("Emails are equivalent, ", top5List.ownerEmail);
                         newArray.push(pairsArray[i]);
                     }
@@ -474,10 +474,26 @@ function GlobalStoreContextProvider(props) {
             }
         }
         else if(localOnAllLists){
-            console.log("Inside localOnAllLists");
+            for(let i = 0; i < pairsArray.length; i ++){
+                let newResponse = await api.getTop5ListById(pairsArray[i]._id);
+                if(newResponse.data.success){
+                    let top5List = newResponse.data.top5List;
+                    if(top5List.published !== "false" && store.startsWith(top5List.name)){
+                        newArray.push(pairsArray[i]);
+                    }
+                }
+            }
         }
         else if(localOnUserLists){
-            
+            for(let i = 0; i < pairsArray.length; i ++){
+                let newResponse = await api.getTop5ListById(pairsArray[i]._id);
+                if(newResponse.data.success){
+                    let top5List = newResponse.data.top5List;
+                    if(top5List.published !== "false" && store.matchesExactly(top5List.userName)){
+                        newArray.push(pairsArray[i]);
+                    }
+                }
+            }
         }
         else if(localOnCommunityLists){
 
@@ -485,6 +501,26 @@ function GlobalStoreContextProvider(props) {
         return newArray;
 
     }
+    store.startsWith = function(text){
+        localSearchText = localSearchText.toLowerCase();
+        text = text.toLowerCase();
+        for(let i = 0; i < localSearchText.length; i ++){
+            if(localSearchText[i] !== text[i]){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    store.matchesExactly = function(text){
+        localSearchText = localSearchText.toLowerCase();
+        text = text.toLowerCase();
+        if(text !== localSearchText){
+            return false;
+        }
+        return true;
+    }
+
     // THE FOLLOWING 5 FUNCTIONS ARE FOR COORDINATING THE DELETION
     // OF A LIST, WHICH INCLUDES USING A VERIFICATION MODAL. THE
     // FUNCTIONS ARE markListForDeletion, deleteList, deleteMarkedList,
@@ -684,9 +720,6 @@ function GlobalStoreContextProvider(props) {
         localOnAllLists = true;
         localOnUserLists = false;
         localOnCommunityLists = false;
-        // storeReducer({
-        //     type: GlobalStoreActionType.ON_ALL_LISTS,
-        // });
         store.loadIdNamePairs();
     }
 
@@ -695,9 +728,6 @@ function GlobalStoreContextProvider(props) {
         localOnAllLists = false;
         localOnUserLists = true;
         localOnCommunityLists = false;
-        // storeReducer({
-        //     type: GlobalStoreActionType.ON_USER_LISTS,
-        // });
         store.loadIdNamePairs();
     }
 
@@ -706,9 +736,11 @@ function GlobalStoreContextProvider(props) {
         localOnAllLists = false;
         localOnUserLists = false;
         localOnCommunityLists = true;
-        // storeReducer({
-        //     type: GlobalStoreActionType.ON_COMMUNITY_LISTS,
-        // });
+        store.loadIdNamePairs();
+    }
+
+    store.setLocalSearchText = function(text){
+        localSearchText = text;
         store.loadIdNamePairs();
     }
 

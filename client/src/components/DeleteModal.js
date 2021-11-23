@@ -49,43 +49,10 @@ function DeleteModal(props) {
         event.stopPropagation();
         console.log("Waiting to hide deleteListModal");
         store.hideDeleteListModal();
-        //while()
-        //handleClose();
-        //open = false;
-        //forceUpdate = useForceUpdate();
         handleClose();
     }
     let visibleClass = "modal";
-    //OLD RENDER, WORKS
-    // return (
-    //     <div
-    //         className={visibleClass}
-    //         id="delete-modal"
-    //         data-animation="slideInOutLeft"
-    //         >
-    //         <div className="modal-dialog">
-    //             <header className="dialog-header">
-    //                 Delete the {name} Top 5 List?
-    //             </header>
-    //             <div id="confirm-cancel-container">
-    //                 <button
-    //                     id="dialog-yes-button"
-    //                     className="modal-button"
-    //                     onClick={handleDeleteList}
-    //                 >Confirm</button>
-    //                 <button
-    //                     id="dialog-no-button"
-    //                     className="modal-button"
-    //                     onClick={handleCloseModal}
-    //                 >Cancel</button>
-    //             </div>
-    //         </div>
-    //     </div>
-    // );
     console.log("value of open passed from props: ", props.open);
-    // if(props.open === true){
-    //     handleOpen();
-    // }
     const style = {
         display: "flex",
         position: 'absolute',

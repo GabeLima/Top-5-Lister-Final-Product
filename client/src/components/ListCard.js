@@ -6,6 +6,7 @@ import ListItem from '@mui/material/ListItem';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AuthContext from '../auth';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -15,6 +16,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
     @author McKilla Gorilla
 */
 function ListCard(props) {
+    const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
@@ -121,11 +123,14 @@ function ListCard(props) {
 
                 </Box>
                 <Box sx={{ p: 1 }}>
-                    <IconButton onClick={(event) => {
-                        handleDeleteList(event, idNamePair._id)
-                    }} aria-label='delete'>
-                        <DeleteIcon style={{fontSize:'48pt'}} />
-                    </IconButton>
+                    {auth.user.userName === idNamePair.userName ?
+                        <IconButton onClick={(event) => {
+                            handleDeleteList(event, idNamePair._id)
+                        }} aria-label='delete'>
+                            <DeleteIcon style={{fontSize:'48pt'}} />
+                        </IconButton>
+                    : 
+                    <span></span>}
                 </Box>
         </ListItem>
 

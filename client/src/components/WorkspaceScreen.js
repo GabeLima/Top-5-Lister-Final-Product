@@ -57,6 +57,9 @@ function WorkspaceScreen() {
     }
 
     function onPublish(){
+        if(text!=""){
+            store.currentList.name = text;
+        }
         var today = new Date();
         var dd = String(today.getDate()).padStart(2, '0');
         var mm = String(today.getMonth()).padStart(2, '0');
