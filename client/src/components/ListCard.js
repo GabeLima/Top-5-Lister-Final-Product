@@ -7,6 +7,8 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AuthContext from '../auth';
+import ThumbUp from '@mui/icons-material/ThumbUp'
+import ThumbDown from '@mui/icons-material/ThumbDown'
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -130,6 +132,20 @@ function ListCard(props) {
         > 
                 <Box sx={{ p: 2, flexGrow: 1, marginTop:'-0%' }}>
                     {idNamePair.name}
+                    <span id="list-card-likes-and-dislikes">
+                        <IconButton onClick={(event) => {
+                                //handleDeleteList(event, idNamePair._id)
+                            }} aria-label='Thumbs up'>
+                                <ThumbUp style={{fontSize:'24pt'}} />
+                                {idNamePair.likedBy.length}
+                            </IconButton>
+                            <IconButton onClick={(event) => {
+                                //handleDeleteList(event, idNamePair._id)
+                            }} aria-label='Thumbs Down'>
+                                <ThumbDown style={{fontSize:'24pt'}} />
+                                {idNamePair.dislikedBy.length}
+                            </IconButton>
+                    </span>
                     <div id="list-card-by-text">
                         {"By: "}
                         <span id="list-card-by-text-colored" onClick = {(event)=> handleSelectUser(event, idNamePair.userName)}>
@@ -137,7 +153,7 @@ function ListCard(props) {
                         </span> 
                     </div>
                     {store.listcardExpanded!= null && store.listcardExpanded == idNamePair._id? 
-                    <div class="items-and-comments-container">
+                    <div className="items-and-comments-container">
                         <ol id="list-card-items">
                            <li>{idNamePair.items[0]}</li>
                            <li>{idNamePair.items[1]}</li>

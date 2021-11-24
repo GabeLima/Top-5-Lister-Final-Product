@@ -91,6 +91,13 @@ function WorkspaceScreen() {
         if(store.currentList.name === ""){
             return true;
         }
+        for(let i = 0; i < items.length; i ++){
+            for(let k = 0; k < items.length; k ++){
+                if(i !== k && items[k] === items[i]){
+                    return true;
+                }
+            }
+        }
         //Otherwise do any of our published lists match our currentLists name?
         return false;
     }

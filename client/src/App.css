@@ -308,6 +308,10 @@ body {
   top:-57%; */
 }
 
+#list-card-likes-and-dislikes {
+  float:right;
+}
+
 #list-card-comments {
   /* overflow-y: scroll; */
   position: relative;
