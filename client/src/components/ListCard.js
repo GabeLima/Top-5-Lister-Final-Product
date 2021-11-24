@@ -20,7 +20,8 @@ function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
-    const { idNamePair } = props;
+    const { idNamePair, comments } = props;
+    //let idNamePair = store.idNamePairs;
 
     function handleLoadList(event, id) {
         if (!event.target.disabled) {
@@ -47,7 +48,7 @@ function ListCard(props) {
         store.markListForDeletion(id);
         console.log("Marking list for deletion: ", id);
     }
-
+    //FOR THE COMMENTS
     function handleKeyPress(event) {
         if (event.code === "Enter" || event.code === "NumpadEnter") {
             if(event.target.value !== ""){
@@ -56,7 +57,13 @@ function ListCard(props) {
                 store.currentList.comments.push(newComment);
                 console.log("Creating a comment for comment: " + event.target.value);
                 document.getElementById("comment-bar").value = "";
-                store.updateCurrentList();
+                //store.updateCurrentList();
+                //store.setAllListsView();
+                
+                store.loadIdNamePairsAfterPushingComment();
+                //setNewListCardId();
+                //store.currentList = 
+                //store.loadIdNamePairs();
                 // let id = event.target.id.substring("list-".length);
                 // store.changeListName(id, text);
             }
@@ -76,8 +83,10 @@ function ListCard(props) {
     function handleSelectUser(event, userName) {
         //alert(event.target);
         //store.setUserListsView();
+        store.setLocalSearchText(userName);
         document.getElementById("search-bar").value = userName;
-        console.log("HAVE TO IMPLEMENT THIS- SELECTING A USER FROM LISTS");
+        store.setUserListsView();
+        //store.resetLocalListCardId();
     }
 
     function handleUpdateText(event) {
@@ -99,7 +108,7 @@ function ListCard(props) {
     // if(store.idNamePairs.comments.length > 0){
 
     // }
-    
+    let reversedComments = comments.slice(0).reverse();
 
     let cardElement =
         <ListItem
@@ -136,9 +145,9 @@ function ListCard(props) {
                            <li>{idNamePair.items[3]}</li>
                            <li>{idNamePair.items[4]}</li>
                         </ol>
-                        <div id="list-card-comments" >
-                            <ul id="list-card-comments" style={{listStyleType:"none", padding: 0, width:"100%"}}>
-                                {idNamePair.comments.map(
+                        <div id="list-card-comments-container" >
+                            <ul id="list-card-comments"style={{listStyleType:"none", padding: 0, width:"100%"}}>
+                                {reversedComments.map(
                                     p => 
                                     <li>
                                         <li id="list-card-comments-user" onClick = {(event)=> handleSelectUser(event, idNamePair.userName)}>
@@ -149,24 +158,12 @@ function ListCard(props) {
                                         </li>
                                     </li>)
                                     }
-                            {/* store.idNamePairs.map((pair) => (
-                                <li
-                                    key={pair._id}
-                                    idNamePair={pair}
-                                    selected={false}
-                                />
-                                )) */}
-                                {/* <li>{idNamePair.items[0]}</li>
-                                <li>{idNamePair.items[1]}</li>
-                                <li>{idNamePair.items[2]}</li>
-                                <li>{idNamePair.items[3]}</li>
-                                <li>{idNamePair.items[4]}</li> */}
                             </ul>
                             <input
                                 type="text"
                                 id="comment-bar"
                                 placeholder={"Add a comment!"}
-                                style={{width: "98%", height:"70%"}}
+                                style={{width: "98%", height:"20%", position:"relative"}}
                                 onKeyPress = {handleKeyPress}
                                 //onChange={handleChange}
                                 //onLoad={handleChange}

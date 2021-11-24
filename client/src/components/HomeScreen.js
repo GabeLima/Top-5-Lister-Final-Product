@@ -24,15 +24,23 @@ const HomeScreen = () => {
 
     function yourListsView(){
         store.setYourListsView();
+        store.resetLocalSearchtext();
+        document.getElementById("search-bar").value = "";
     }
     function allListsView(){
         store.setAllListsView();
+        store.resetLocalSearchtext();
+        document.getElementById("search-bar").value = "";
     }
     function userListsView(){
         store.setUserListsView();
+        store.resetLocalSearchtext();
+        document.getElementById("search-bar").value = "";
     }
     function communityListsView(){
         store.setCommunityListsView();
+        store.resetLocalSearchtext();
+        document.getElementById("search-bar").value = "";
     }
     function handleChange(event){
         store.setLocalSearchText(event.target.value);
@@ -61,6 +69,7 @@ const HomeScreen = () => {
                         key={pair._id}
                         idNamePair={pair}
                         selected={false}
+                        comments ={pair.comments}
                     />
                 ))
             }

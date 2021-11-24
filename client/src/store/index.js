@@ -136,7 +136,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.LOAD_ID_NAME_PAIRS: {
                 return setStore({
                     idNamePairs: payload,
-                    currentList: null,
+                    currentList: store.currentList,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
@@ -148,7 +148,7 @@ function GlobalStoreContextProvider(props) {
                     onUserListsPage: localOnUserLists,
                     onAllListsPage: localOnAllLists,
                     onCommunityListsPage: localOnCommunityLists,
-                    listcardExpanded: null
+                    listcardExpanded: localListCardId
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -489,6 +489,27 @@ function GlobalStoreContextProvider(props) {
         const response = await api.getTop5ListPairs();
         if (response.data.success) {
             let pairsArray = response.data.idNamePairs;
+            console.log("New id name pairs after loading:", pairsArray);
+            let newArray = await store.loadInitialLists(pairsArray);
+            storeReducer({
+                type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                payload: newArray
+            });
+        }
+        else {
+            console.log("API FAILED TO GET THE LIST PAIRS");
+        }
+    }
+
+
+    // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
+    store.loadIdNamePairsAfterPushingComment = async function () {
+        await store.updateCurrentList();
+        tps.clearAllTransactions();
+        const response = await api.getTop5ListPairs();
+        if (response.data.success) {
+            let pairsArray = response.data.idNamePairs;
+            console.log("New id name pairs after loading:", pairsArray);
             let newArray = await store.loadInitialLists(pairsArray);
             storeReducer({
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
@@ -545,6 +566,8 @@ function GlobalStoreContextProvider(props) {
     store.startsWith = function(text){
         localSearchText = localSearchText.toLowerCase();
         text = text.toLowerCase();
+        console.log("localSearchText: ", localSearchText);
+        console.log("text: ", text);
         for(let i = 0; i < localSearchText.length; i ++){
             if(localSearchText[i] !== text[i]){
                 return false;
@@ -770,12 +793,8 @@ function GlobalStoreContextProvider(props) {
         localOnAllLists = false;
         localOnUserLists = false;
         localOnCommunityLists = false;
-        // storeReducer({
-        //     type: GlobalStoreActionType.ON_YOUR_LISTS,
-        // });
-        // console.log("onYourLists after reducer: ", store.onYourListsPage);
+        localListCardId = null;
         store.loadIdNamePairs();
-        //console.log("onYourLists after loading idNamePairs: ", store.onYourListsPage);
     }
 
     store.setAllListsView = function(){
@@ -783,6 +802,7 @@ function GlobalStoreContextProvider(props) {
         localOnAllLists = true;
         localOnUserLists = false;
         localOnCommunityLists = false;
+        localListCardId = null;
         store.loadIdNamePairs();
     }
 
@@ -791,6 +811,7 @@ function GlobalStoreContextProvider(props) {
         localOnAllLists = false;
         localOnUserLists = true;
         localOnCommunityLists = false;
+        localListCardId = null;
         store.loadIdNamePairs();
     }
 
@@ -799,6 +820,7 @@ function GlobalStoreContextProvider(props) {
         localOnAllLists = false;
         localOnUserLists = false;
         localOnCommunityLists = true;
+        localListCardId = null;
         store.loadIdNamePairs();
     }
 
@@ -811,6 +833,14 @@ function GlobalStoreContextProvider(props) {
             type: GlobalStoreActionType.NEW_LIST_CARD,
             payload:newListCardId
         });
+    }
+
+    store.resetLocalSearchtext = function(){
+        localSearchText = "";
+    }
+
+    store.resetLocalListCardId = function(){
+        localListCardId = null;
     }
 
     return (

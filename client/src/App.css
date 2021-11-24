@@ -279,6 +279,7 @@ body {
   padding: 0;
   margin: 0;
   word-wrap: break-word;
+  height:100%;
   /* overflow-y: clip; */
   /* background-color: #ff00ff; */
 }
@@ -295,16 +296,31 @@ body {
   top:-57%; */
 }
 
+#list-card-comments-container {
+  /* overflow-y: scroll; */
+  position: relative;
+  font-size: 15pt;
+  display: inline-block;
+  vertical-align: top;
+  width:45%;
+  
+  /* left:54%;
+  top:-57%; */
+}
 
 #list-card-comments {
   /* overflow-y: scroll; */
+  position: relative;
   font-size: 15pt;
   color:black;
   background-color: #cfa838;
   display: inline-block;
   vertical-align: top;
   width:45%;
+  height:121px;
   word-wrap: break-word;
+  overflow-y: scroll;
+  overflow-x: hidden;
   
   /* left:54%;
   top:-57%; */
@@ -316,9 +332,9 @@ body {
   cursor: pointer;
 }
 #list-card-comments-comment {
-  font-size: 20pt;
+  font-size: 18pt;
   color:black;
-  width:200%;
+  /* width:200%; */
   word-wrap: break-word;
 }
 
