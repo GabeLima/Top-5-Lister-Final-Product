@@ -91,7 +91,15 @@ const HomeScreen = () => {
     }
 
     function sortByViews(){
-
+        let idNamePairs = store.idNamePairs;
+        idNamePairs.sort(function(pair1, pair2){
+            let p1Views = parseInt(pair1.views);
+            let p2Views = parseInt(pair2.views);
+            if(p1Views > p2Views) return -1;
+            if(p1Views == p2Views) return 0;
+            if(p1Views <  p2Views) return 1;
+        });
+        store.loadCustomIDNamePairs(idNamePairs);
     }
 
     function sortByLikes(){

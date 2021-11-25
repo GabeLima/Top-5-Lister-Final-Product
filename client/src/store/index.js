@@ -531,6 +531,33 @@ function GlobalStoreContextProvider(props) {
             console.log("API FAILED TO GET THE LIST PAIRS");
         }
     }
+
+    store.updateListViewsById = async function (id) {
+        let response = await api.getTop5ListById(id);
+        if (response.data.success){
+            let top5List = response.data.top5List;
+            top5List.views = parseInt(top5List.views);
+            top5List.views +=1;
+            //await store.updateCurrentList();
+            response = await api.updateTop5ListById(id, top5List);
+            if(response.data.success){
+                response = await api.getTop5ListPairs();
+                if (response.data.success) {
+                    let pairsArray = response.data.idNamePairs;
+                    console.log("New id name pairs after loading:", pairsArray);
+                    let newArray = await store.loadInitialLists(pairsArray);
+                    storeReducer({
+                        type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                        payload: newArray
+                    });
+                }
+                else {
+                    console.log("API FAILED TO GET THE LIST PAIRS");
+                }
+            }
+        }
+    }
+
     //For sorting the initial lists by what page we're on
     store.loadInitialLists = async function(pairsArray){
         let newArray = [];
@@ -686,12 +713,16 @@ function GlobalStoreContextProvider(props) {
         let response = await api.getTop5ListById(id);
         if (response.data.success) {
             let top5List = response.data.top5List;
+            // top5List.views = parseInt(top5List.views);
+            // //Increment the view count by 1...
+            // top5List.views += 1;
             //response = await api.updateTop5ListById(top5List._id, top5List);
             //store.currentList = top5List;
             storeReducer({
                 type: GlobalStoreActionType.SET_CURRENT_LIST,
                 payload: top5List
             });
+            //store.updateCurrentList();
             console.log("We set the current list without changing the page!");
             // if (response.data.success) {
             //     storeReducer({
@@ -776,6 +807,7 @@ function GlobalStoreContextProvider(props) {
             }
         }
     }
+
 
     store.undo = function () {
         tps.undoTransaction();

@@ -263,6 +263,17 @@ body {
   cursor: pointer;
 }
 
+#list-card-views {
+  float:right;
+  font-size: 17pt;
+  /* //left:20%; */
+}
+#list-card-views-colored {
+  float:right;
+  color:red;
+  /* //left:20%; */
+}
+
 #list-card-published-color {
   font-size: 15pt;
   color:green;

@@ -94,7 +94,6 @@ function ListCard(props) {
     }
 
     function handleLike(){
-        //store.setCurrentListWithoutChangingPage(idNamePair._id);
         let likedByList = idNamePair.likedBy;
         
         for(let i = 0; i < likedByList.length; i++){
@@ -102,8 +101,6 @@ function ListCard(props) {
                 likedByList.splice(i, 1);
                 idNamePair.likedBy = likedByList;
                 store.updateListLikesAndDislikes(idNamePair._id, idNamePair.likedBy, idNamePair.dislikedBy);
-                //store.currentList.likedBy = idNamePair.likedBy; 
-                //store.updateCurrentList();
                 return;
             }
         }
@@ -114,21 +111,16 @@ function ListCard(props) {
             if(dislikedByList[i] === auth.user.userName){ //If its disliked, remove the dislike
                 dislikedByList.splice(i, 1);
                 idNamePair.dislikedBy = dislikedByList;
-                //store.updateListLikesAndDislikes(idNamePair._id, idNamePair.likedBy, idNamePair.dislikedBy);
-                //store.currentList.dislikedBy = idNamePair.dislikedBy; 
                 break;
             }
         }
         //Finally add the like
         idNamePair.likedBy.push(auth.user.userName);
         store.updateListLikesAndDislikes(idNamePair._id, idNamePair.likedBy, idNamePair.dislikedBy);
-        //store.currentList.likedBy = idNamePair.likedBy; 
-        //store.updateCurrentList();
     }
 
 
     function handleDislike(){
-        //await store.setCurrentListWithoutChangingPage(idNamePair._id);
         let dislikedByList = idNamePair.dislikedBy;
         
         for(let i = 0; i < dislikedByList.length; i++){
@@ -157,9 +149,6 @@ function ListCard(props) {
         //Finally add the like
         idNamePair.dislikedBy.push(auth.user.userName);
         store.updateListLikesAndDislikes(idNamePair._id, idNamePair.likedBy, idNamePair.dislikedBy);
-        //store.currentList.dislikedBy = idNamePair.dislikedBy; 
-        //store.setCurrentListWithoutChangingPage(idNamePair._id);
-        //store.updateCurrentList();
     }
 
     function isLikedByThisUser(){
@@ -189,8 +178,11 @@ function ListCard(props) {
     }
     let isOpen = false;
     function setNewListCardId(event) {
+        store.updateListViewsById(idNamePair._id);
         store.setCurrentListWithoutChangingPage(idNamePair._id);
+        //if(idNamePair.published !== "false")
         store.setListCardExpanded(idNamePair._id);
+        //store.updateCurrentList();
     }
     let isPublished = idNamePair.published;
     if(isPublished !== "false"){
@@ -226,6 +218,7 @@ function ListCard(props) {
         > 
                 <Box sx={{ p: 2, flexGrow: 1, marginTop:'-0%' }}>
                     {idNamePair.name}
+                    {isPublished ?
                     <span id="list-card-likes-and-dislikes">
                         <IconButton id={isLikedByThisUser() ? "list-card-liked-or-disliked-color" : ""} onClick={(event) => {
                                 event.stopPropagation();
@@ -242,6 +235,9 @@ function ListCard(props) {
                                 {idNamePair.dislikedBy.length}
                             </IconButton>
                     </span>
+                    :
+                    <span></span>}
+
                     <div id="list-card-by-text">
                         {"By: "}
                         <span id="list-card-by-text-colored" onClick = {(event)=> handleSelectUser(event, idNamePair.userName)}>
@@ -295,6 +291,11 @@ function ListCard(props) {
                             <span id="list-card-published-color">
                                 {idNamePair.published}
                             </span>
+                            <span id="list-card-views"> {"Views: "} 
+                            <span id="list-card-views-colored"> {idNamePair.views} 
+                            </span>
+                            </span>
+
                         </span> 
                             : 
                             <span id="list-card-not-published-color" onClick={(event) => {handleLoadList(event, idNamePair._id)}}>
