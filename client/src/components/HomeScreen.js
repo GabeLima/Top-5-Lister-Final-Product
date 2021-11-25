@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
 import { Fab, Typography } from '@mui/material'
@@ -6,10 +6,12 @@ import Home from '@mui/icons-material/Home';
 import Groups from '@mui/icons-material/Groups';
 import Person from '@mui/icons-material/Person';
 import Functions from '@mui/icons-material/Functions';
-import Menu from '@mui/icons-material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import Menu from '@mui/material/Menu';
 import List from '@mui/material/List';
 import { DeleteModal} from '.';
 import AlertModal from './AlertModal';
+import MenuItem from '@mui/material/MenuItem';
 /*
     This React component lists all the top5 lists in the UI.
     
@@ -46,6 +48,73 @@ const HomeScreen = () => {
         store.setLocalSearchText(event.target.value);
     }
 
+    function sortByPublishDateNewest(){
+        let idNamePairs = store.idNamePairs;
+        idNamePairs.sort(function(pair1, pair2){
+            if(determineDateValue(pair1.published) > determineDateValue(pair2.published)) return -1;
+            if(determineDateValue(pair1.published) == determineDateValue(pair2.published)) return 0;
+            if(determineDateValue(pair1.published) <  determineDateValue(pair2.published)) return 1;
+        });
+        store.loadCustomIDNamePairs(idNamePairs);
+    }
+
+    
+    function sortByPublishDateOldest(){
+        let idNamePairs = store.idNamePairs;
+        idNamePairs.sort(function(pair1, pair2){
+            if(determineDateValue(pair1.published) < determineDateValue(pair2.published)) return -1;
+            if(determineDateValue(pair1.published) == determineDateValue(pair2.published)) return 0;
+            if(determineDateValue(pair1.published) >  determineDateValue(pair2.published)) return 1;
+        });
+        store.loadCustomIDNamePairs(idNamePairs);
+    }
+
+    function determineDateValue(date){
+        if(date==="false") return -1;
+        //let date = 0;
+        let firstSpace = date.indexOf(" ");
+        let month = date.substring(0, firstSpace);
+        var monthValues = {"January":0, "February":1, "March":2, "April":3, "May":4, "June":5,
+        "July":6, "August":7, "September":8, "October":9, "November":10, "December":11
+        };
+        let monthValue = monthValues[month] * 10;
+        //console.log("month: ", monthValue);
+        let secondSpace = date.indexOf(" ", firstSpace+1);
+        let day = date.substring(firstSpace+1, secondSpace);
+        //console.log("day: ", day);
+        let year = date.substring(secondSpace);
+        //console.log("year: ", year);
+        let finalValue = year + monthValue + day;
+        //console.log("Final Value: ", parseInt(finalValue));
+        return parseInt(finalValue);
+        //if(date.indexOf(" "))
+    }
+
+    function sortByViews(){
+
+    }
+
+    function sortByLikes(){
+        let idNamePairs = store.idNamePairs;
+        idNamePairs.sort(function(pair1, pair2){
+            if(pair1.likedBy.length > pair2.likedBy.length) return -1;
+            if(pair1.likedBy.length == pair2.likedBy.length) return 0;
+            if(pair1.likedBy.length <  pair2.likedBy.length) return 1;
+        });
+        store.loadCustomIDNamePairs(idNamePairs);
+    }
+
+    function sortByDislikes(){
+        let idNamePairs = store.idNamePairs;
+        idNamePairs.sort(function(pair1, pair2){
+            if(pair1.dislikedBy.length > pair2.dislikedBy.length) return -1;
+            if(pair1.dislikedBy.length == pair2.dislikedBy.length) return 0;
+            if(pair1.dislikedBy.length <  pair2.dislikedBy.length) return 1;
+        });
+        store.loadCustomIDNamePairs(idNamePairs);
+    }
+
+
     let defaultBackgroundColor = "#c8c4c4";
     let selectedBackgroundColor = "#2074d4"
 
@@ -77,7 +146,38 @@ const HomeScreen = () => {
             <AlertModal></AlertModal>
             </List>;
     }
-    // old delete modal went above the /list here
+    //Something about the menu idk
+    const [anchorEl, setAnchorEl] = useState(null);
+    const isMenuOpen = Boolean(anchorEl);
+    const handleSortMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+    const menuId = 'primary-search-account-menu';
+    const menu = 
+    <Menu
+        anchorEl={anchorEl}
+        anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+        }}
+        id={menuId}
+        keepMounted
+        transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+        }}
+        open={isMenuOpen}
+        onClose={handleMenuClose}
+    >
+        <MenuItem onClick={sortByPublishDateNewest}>Publish Date (Newest)</MenuItem>
+        <MenuItem onClick={sortByPublishDateOldest}>Publish Date (Oldest)</MenuItem>
+        <MenuItem onClick={sortByViews}>Views</MenuItem>
+        <MenuItem onClick={sortByLikes}>Likes</MenuItem>
+        <MenuItem onClick={sortByDislikes}>Dislikes</MenuItem>
+    </Menu>  
 
     return (
         <div id="top5-list-selector">
@@ -132,15 +232,25 @@ const HomeScreen = () => {
             />
             <span id="list-selector-heading-sort">
                 <Typography variant="h4" fontWeight='bold'>Sort By</Typography>
+                        <Menu>
+                            <MenuItem >Login</MenuItem>
+                            </Menu>
                     <Fab 
                         color="primary" 
                         aria-label="sort"
                         style={{backgroundColor: defaultBackgroundColor, color:"black"}}
                         // id="add-list-button"
                         // onClick={handleCreateNewList}
+                        onClick={handleSortMenuOpen}
                     >
-                        <Menu />
+                        
+                        {/* <MenuItem >Login</MenuItem> */}
+                        
+                            <MenuIcon />
                     </Fab>
+                    {
+                        menu
+                    }
             </span>
             </div>
             <div id="list-selector-list">

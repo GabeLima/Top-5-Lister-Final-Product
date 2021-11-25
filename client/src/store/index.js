@@ -502,6 +502,16 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+    //This is for sorting the lists by whatever we want
+    store.loadCustomIDNamePairs = async function (newArray) {
+        storeReducer({
+            type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+            payload: newArray
+        });
+    }
+
+
+
 
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairsAfterPushingComment = async function () {

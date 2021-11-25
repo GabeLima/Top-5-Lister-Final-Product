@@ -212,6 +212,7 @@ function ListCard(props) {
             sx={{ marginTop: '-15px', display: 'flex', p: 1 }}
             //button
             onClick={setNewListCardId}
+            backgroundColor="black"
             // onClick={(event) => {
             //     handleLoadList(event, idNamePair._id)
             // }
