@@ -211,6 +211,11 @@ function ListCard(props) {
     // }
     let reversedComments = comments.slice(0).reverse();
 
+    let cardBackgroundColor = "#fffcf4";
+    if(isPublished){
+        cardBackgroundColor = "#e0d4f4";
+    }
+
     let cardElement =
         <ListItem
             id={idNamePair._id}
@@ -218,7 +223,7 @@ function ListCard(props) {
             sx={{ marginTop: '-15px', display: 'flex', p: 1 }}
             //button
             onClick={setNewListCardId}
-            backgroundColor="black"
+            //backgroundColor="black"
             // onClick={(event) => {
             //     handleLoadList(event, idNamePair._id)
             // }
@@ -226,7 +231,8 @@ function ListCard(props) {
             style={{
                 fontSize: '20pt',
                 width: '100%',
-                top:"0px"
+                top:"0px",
+                backgroundColor: cardBackgroundColor
                 //marginTop:'0%'
             }}
         > 

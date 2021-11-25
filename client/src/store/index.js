@@ -468,7 +468,8 @@ function GlobalStoreContextProvider(props) {
             comments: [],
             likedBy: [],
             dislikedBy:[],
-            views:'0'
+            views:'0',
+            isCommunityList: "false"
         };
         const response = await api.createTop5List(payload);
         if (response.data.success) {
@@ -570,7 +571,7 @@ function GlobalStoreContextProvider(props) {
                 let newResponse = await api.getTop5ListById(pairsArray[i]._id);
                 if(newResponse.data.success){
                     let top5List = newResponse.data.top5List;
-                    if(top5List.ownerEmail === auth.user.email && store.startsWith(top5List.name)){
+                    if(top5List.ownerEmail === auth.user.email && store.startsWith(top5List.name) && top5List.isCommunityList === "false"){
                         console.log("Emails are equivalent, ", top5List.ownerEmail);
                         newArray.push(pairsArray[i]);
                     }
@@ -582,7 +583,7 @@ function GlobalStoreContextProvider(props) {
                 let newResponse = await api.getTop5ListById(pairsArray[i]._id);
                 if(newResponse.data.success){
                     let top5List = newResponse.data.top5List;
-                    if(top5List.published !== "false" && store.startsWith(top5List.name)){
+                    if(top5List.published !== "false" && store.startsWith(top5List.name) && top5List.isCommunityList === "false"){
                         newArray.push(pairsArray[i]);
                     }
                 }
@@ -593,18 +594,111 @@ function GlobalStoreContextProvider(props) {
                 let newResponse = await api.getTop5ListById(pairsArray[i]._id);
                 if(newResponse.data.success){
                     let top5List = newResponse.data.top5List;
-                    if(top5List.published !== "false" && store.matchesExactly(top5List.userName)){
+                    if(top5List.published !== "false" && store.matchesExactly(top5List.userName) && top5List.isCommunityList === "false"){
                         newArray.push(pairsArray[i]);
                     }
                 }
             }
         }
         else if(localOnCommunityLists){
+            //Iterate through all the pairs, grab anything that isn't a community list
+            let nonCommunityLists = [];
+            let communityLists = [];
+            for(let i = 0; i < pairsArray.length; i ++){
+                let newResponse = await api.getTop5ListById(pairsArray[i]._id);
+                if(newResponse.data.success){
+                    let top5List = newResponse.data.top5List;
+                    if(top5List.published !== "false" && store.startsWith(top5List.name) && top5List.isCommunityList === "false"){
+                        nonCommunityLists.push(pairsArray[i]);
+                        //newArray.push(pairsArray[i]);
+                    }
+                    else if(top5List.published !== "false" && store.startsWith(top5List.name) && top5List.isCommunityList === "true") {
+                        communityLists.push(pairsArray[i]);
+                    }
+                }
+            }
+            //Generate the new community lists, if we have any comments, likes or dislikes, or views we can port over from the old community lists- do it
+            let checkedLists = [];
+            for(let i = 0; i < nonCommunityLists.length; i++){
+                //If its in the processed list, we skip over it!
+                if(!store.notIn(nonCommunityLists[i].name, checkedLists)){
+                    continue;
+                }
+                let rankingMap = new Map();
+                let originalCaps = [];
+                let allComments = [];
+                let allLikes = [];
+                let allDislikes = [];
+                let allViews = 0;
+                //Add the current Items to the ranking through an associative array
+                for(let j = 0; j < nonCommunityLists[i].items.length; j++){
+                    rankingMap.set(nonCommunityLists[i].items[j].toLowerCase(), 5-j); //Give them their value
+                    originalCaps.push(nonCommunityLists[i].items[j]); //Save the capitalization forms of the items
+                }
+                // //Add the comments
+                for(let j = 0; j < communityLists[j].length; j++){ //iterate through the community lists
+                    if(communityLists[j].name.toLowerCase() === nonCommunityLists[i].name.toLowerCase()){ //The names match, port over the old comments, likes, dislikes, and views
+                        //comments
+                        for(let y = 0; y < communityLists[j].comments.length; y++){
+                            allComments.push(communityLists[j].comments[y]);
+                        }
+                        //liked
+                        for(let y = 0; y < communityLists[j].likedBy.length; y++){
+                            allLikes.push(communityLists[j].likedBy[y]);
+                        }
+                        //disliked
+                        for(let y = 0; y < communityLists[j].dislikedBy.length; y++){
+                            allDislikes.push(communityLists[j].dislikedBy[y]);
+                        }
+                        //views
+                        allViews += communityLists[j].views;
+                    }
+                }
 
+                //Iterate through the rest of the lists, if they're the same name add them to the map and caps array
+                for(let k = i + 1; k < nonCommunityLists.length; k ++){
+                    if(nonCommunityLists[i].name.toLowerCase() === nonCommunityLists[k].name.toLowerCase()){
+                        //Names are the same, add its items to the ranking --- ITEMS
+                        for(let j = 0; j < nonCommunityLists[k].items.length; j++){
+                            if(rankingMap.get(nonCommunityLists[k].items[j].toLowerCase()) !== undefined){
+                                let existingValue = rankingMap.get(nonCommunityLists[k].items[j].toLowerCase());
+                                rankingMap.set(nonCommunityLists[k].items[j].toLowerCase(), existingValue + 5-j);
+                            }
+                            else{
+                                rankingMap.set(nonCommunityLists[k].items[j].toLowerCase(), 5-j);
+                                originalCaps.push(nonCommunityLists[k].items[j]);
+                            }
+                        }
+                    }
+                }
+                //Once we reach the end, we have all information we need to assemble it!
+                let sortedMap = new Map([...rankingMap.entries()].sort((a, b) => b[1] - a[1]));
+                //Take the first 5 entries 
+                let newList = nonCommunityLists[i];
+                // for(let k = 0; k < newList.items.length; k++){
+                //     newList.items[k] = 
+                // }
+                checkedLists.push(nonCommunityLists[i]);
+            }
+
+
+
+            //Save the new community lists
         }
         return newArray;
 
     }
+
+    store.notIn = function(name, checkedLists){
+        for(let i = 0; i < checkedLists.length; i ++){
+            if(checkedLists[i].name.toLowerCase() === name.toLowerCase()){
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     store.startsWith = function(text){
         let localSearchTextLowercase = localSearchText.toLowerCase();
         text = text.toLowerCase();

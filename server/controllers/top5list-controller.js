@@ -59,6 +59,7 @@ updateTop5List = async (req, res) => {
         top5List.likedBy = body.likedBy;
         top5List.dislikedBy = body.dislikedBy;
         top5List.views = body.views;
+        top5List.isCommunityList= body.isCommunityList;
         top5List
             .save()
             .then(() => {
@@ -140,7 +141,8 @@ getTop5ListPairs = async (req, res) => {
                     likedBy : list.likedBy,
                     dislikedBy : list.dislikedBy,
                     views : list.views,
-                    items: list.items
+                    items: list.items,
+                    isCommunityList: list.isCommunityList
                 };
                 pairs.push(pair);
             }
