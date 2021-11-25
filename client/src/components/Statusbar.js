@@ -20,24 +20,66 @@ function Statusbar() {
     function handleCreateNewList() {
         store.createNewList();
     }
+    function disableStatusBar(){
+        if(auth.user.userName === "Guest" || store.listOpen){
+            return true;
+        }
+        return false;
+    }
+    function determineStatusBarText(){
+        if(store.onYourListsPage){
+            return "Your Lists";
+        }
+        if(store.onAllListsPage){
+            if(store.getLocalSearchText() !== ""){
+                return store.getLocalSearchText() + " Lists";
+            }
+            return "All Lists";
+        }
+        if(store.onUserListsPage){
+            if(store.getLocalSearchText() !== ""){
+                return store.getLocalSearchText() + " Lists";
+            }
+            return "User Lists";
+        }
+        if(store.onCommunityListsPage){
+            if(store.getLocalSearchText() !== ""){
+                return store.getLocalSearchText() + " Lists";
+            }
+            return "Community Lists";
+        }
+        return "Your Lists";
+    }
+    function shouldDisplayAddLists(){
+        if(store.onYourListsPage){
+            return true;
+        }
+        return false;
+    }
     if (store.currentList && store.listOpen)
         text = "Top 5 " + store.currentList.name;
     //return(<div></div>);
     if(!auth.loggedIn === true){ // or have to make a check that we're in guest mode...
         return(<div></div>);
     }
+    
     return (
         <div id="top5-statusbar">
             <div id="new-list-selector-heading">
-            <Fab 
-                color="primary" 
-                aria-label="add"
-                id="add-list-button"
-                onClick={handleCreateNewList}
-            >
-                <AddIcon />
-            </Fab>
-                <Typography variant="h2">Your Lists</Typography>
+                {shouldDisplayAddLists() ?
+                        <Fab 
+                            disabled={disableStatusBar()}
+                            color="primary" 
+                            aria-label="add"
+                            id="add-list-button"
+                            onClick={handleCreateNewList}
+                        >
+                            <AddIcon />
+                        </Fab>
+                    :
+                    <span></span>
+                }
+                <Typography variant="h2" disabled={disableStatusBar()}>{determineStatusBarText()}</Typography>
             </div>
         </div>
     );

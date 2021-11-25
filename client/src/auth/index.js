@@ -141,6 +141,54 @@ function AuthContextProvider(props) {
         }
     }
 
+    auth.registerOrLoginGuestAccount = async function(userData, store) {
+        try{
+            const response = await api.loginUser(userData);
+            if (response.status === 200) {
+                console.log("Logging in guest was successful!");
+                authReducer({
+                    type: AuthActionType.LOGIN_USER,
+                    payload: {
+                        loggedIn: true,
+                        user: response.data.user
+                    }
+                })
+                history.push("/");
+                store.setAllListsView();
+                store.loadIdNamePairs();
+            }
+        }catch(Exception){
+            userData = {
+                firstName: "GuestFirstName",
+                lastName: "GuestLastName",
+                email: "Guest",
+                password: "123456789E",
+                passwordVerify: "123456789E",
+                userName: "Guest"
+            }
+            try{
+                const response = await api.registerUser(userData);      
+                if (response.status === 200) {
+                    console.log("Registering guest was successful!");
+                    authReducer({
+                        type: AuthActionType.REGISTER_USER,
+                        payload: {
+                            user: response.data.user
+                        }
+                    })
+                    history.push("/");
+                    store.setAllListsView();
+                    store.loadIdNamePairs();
+                }
+            }
+            catch(Exception){
+                let errorMsg = Exception.response.data.errorMessage;
+                store.setErrorMessage(errorMsg);
+            }
+        }
+        
+    }
+
     return (
         <AuthContext.Provider value={{
             auth

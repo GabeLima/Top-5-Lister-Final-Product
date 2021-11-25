@@ -1,10 +1,23 @@
 import { Fab} from '@mui/material'
+import { useContext } from 'react';
 import { useHistory } from 'react-router-dom'
+import AuthContext from '../auth'
+import { GlobalStoreContext } from '../store'
 export default function SplashScreen() {
+    const { auth } = useContext(AuthContext);
+    const { store } = useContext(GlobalStoreContext);
     const history = useHistory();
 
     const handleLogin = (event) => {
         history.push('/login');
+    };
+
+    const handleLoginGuest = (event) => {
+        auth.registerOrLoginGuestAccount({
+            email: "Guest",
+            password: "123456789E",
+        }, store);
+        //history.push('/login');
     };
 
     const handleRegister = (event) => {
@@ -51,7 +64,7 @@ export default function SplashScreen() {
                     color="disabled" 
                     aria-label="add"
                     id="login-user-button"
-                    //onClick={handleCreateNewList}
+                    onClick={handleLoginGuest}
                 >
                     Guest
                 </Fab>

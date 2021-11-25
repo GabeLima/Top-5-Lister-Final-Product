@@ -19,7 +19,7 @@ import AlertModal from './AlertModal'
 
 export default function LoginScreen() {
     const { auth } = useContext(AuthContext);
-    const { store } = useContext(GlobalStoreContext)
+    const { store } = useContext(GlobalStoreContext);
 
     const theme = createTheme();
     const handleSubmit = (event) => {

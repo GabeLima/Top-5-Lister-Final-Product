@@ -119,11 +119,18 @@ loginUser = async (req, res) => {
             if(loggedInUser === null){
                 loggedInUser = await User.findOne({ userName: email });
                 if(loggedInUser === null){
+                    //Only other option is that the username is "Guest"
+                   // if(email !== "Guest"){
                     return res
                     .status(400)
                     .json({ errorMessage: "Couldn't find an account with that email!"});
+                    //}
+                    //else{
+                        //Create the guest account
+                   // }
                 }
             }
+            
 
             var result = await compareAsync(password, loggedInUser.passwordHash);
             console.log(result);
@@ -145,6 +152,7 @@ loginUser = async (req, res) => {
                         sameSite: "none"
                     }).status(200).json({
                         success: true,
+                        loggedIn: true,
                         user: {
                             firstName: loggedInUser.firstName,
                             lastName: loggedInUser.lastName,
@@ -160,20 +168,23 @@ loginUser = async (req, res) => {
                     res.status(500).send();
                 }
             }
+            else{
+                return res.status(200).json({
+                    //req: req,
+                    success: true,
+                    loggedIn: true,
+                    user: {
+                        firstName: loggedInUser.firstName,
+                        lastName: loggedInUser.lastName,
+                        email: loggedInUser.email,
+                        likedLists: loggedInUser.likedLists,
+                        dislikedLists: loggedInUser.dislikedLists,
+                        comments: loggedInUser.comments,
+                        userName: loggedInUser.userName
+                    }
+                }).send();
+            }
             //auth.verify(req, res, async function (){}
-            return res.status(200).json({
-                //req: req,
-                loggedIn: true,
-                user: {
-                    firstName: loggedInUser.firstName,
-                    lastName: loggedInUser.lastName,
-                    email: loggedInUser.email,
-                    likedLists: loggedInUser.likedLists,
-                    dislikedLists: loggedInUser.dislikedLists,
-                    comments: loggedInUser.comments,
-                    userName: loggedInUser.userName
-                }
-            }).send();
     }catch(Exception){
         console.log(Exception);
     }

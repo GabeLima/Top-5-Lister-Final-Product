@@ -71,6 +71,10 @@ function GlobalStoreContextProvider(props) {
 
     // SINCE WE'VE WRAPPED THE STORE IN THE AUTH CONTEXT WE CAN ACCESS THE USER HERE
     const { auth } = useContext(AuthContext);
+    if(auth != null && auth.user!= null && auth.user.userName=== "Guest"){
+        localOnYourLists = false;
+        localOnAllLists = true;
+    }
 
     // HERE'S THE DATA STORE'S REDUCER, IT MUST
     // HANDLE EVERY TYPE OF STATE CHANGE
@@ -368,7 +372,7 @@ function GlobalStoreContextProvider(props) {
                     onYourListsPage: false,
                     onAllListsPage: false,
                     onUserListsPage: false,
-                    onCommunityListsPage: true,
+                    onCommunityListsPage: false,
                     listHasBeenEdited:false,
                     listcardExpanded: payload
                 });
@@ -602,12 +606,12 @@ function GlobalStoreContextProvider(props) {
 
     }
     store.startsWith = function(text){
-        localSearchText = localSearchText.toLowerCase();
+        let localSearchTextLowercase = localSearchText.toLowerCase();
         text = text.toLowerCase();
-        console.log("localSearchText: ", localSearchText);
+        console.log("localSearchText: ", localSearchTextLowercase);
         console.log("text: ", text);
-        for(let i = 0; i < localSearchText.length; i ++){
-            if(localSearchText[i] !== text[i]){
+        for(let i = 0; i < localSearchTextLowercase.length; i ++){
+            if(localSearchTextLowercase[i] !== text[i]){
                 return false;
             }
         }
@@ -615,9 +619,9 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.matchesExactly = function(text){
-        localSearchText = localSearchText.toLowerCase();
+        let localSearchTextLowercase = localSearchText.toLowerCase();
         text = text.toLowerCase();
-        if(text !== localSearchText){
+        if(text !== localSearchTextLowercase){
             return false;
         }
         return true;
@@ -887,6 +891,9 @@ function GlobalStoreContextProvider(props) {
     store.setLocalSearchText = function(text){
         localSearchText = text;
         store.loadIdNamePairs();
+    }
+    store.getLocalSearchText = function(){
+        return localSearchText;
     }
     store.setListCardExpanded = function(newListCardId){
         storeReducer({

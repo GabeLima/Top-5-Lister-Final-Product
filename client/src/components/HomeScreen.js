@@ -12,12 +12,14 @@ import List from '@mui/material/List';
 import { DeleteModal} from '.';
 import AlertModal from './AlertModal';
 import MenuItem from '@mui/material/MenuItem';
+import AuthContext from '../auth'
 /*
     This React component lists all the top5 lists in the UI.
     
     @author McKilla Gorilla
 */
 const HomeScreen = () => {
+    const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
 
     useEffect(() => {
@@ -121,6 +123,9 @@ const HomeScreen = () => {
         });
         store.loadCustomIDNamePairs(idNamePairs);
     }
+    function disableHome(){
+        return auth.user.userName === "Guest";
+    }
 
 
     let defaultBackgroundColor = "#c8c4c4";
@@ -199,6 +204,7 @@ const HomeScreen = () => {
                 <AddIcon />
             </Fab> */}
             <Fab 
+                disabled={disableHome()}
                 color="primary" 
                 aria-label="Your Lists"
                 onClick={yourListsView}

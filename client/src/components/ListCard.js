@@ -55,6 +55,10 @@ function ListCard(props) {
     function handleKeyPress(event) {
         if (event.code === "Enter" || event.code === "NumpadEnter") {
             if(event.target.value !== ""){
+                if(auth.user.userName === "Guest"){
+                    store.setErrorMessage("You need to register an account to comment on a list!");
+                    return;
+                }
                 let newComment = [idNamePair.userName, event.target.value];
 
                 store.currentList.comments.push(newComment);
@@ -94,6 +98,10 @@ function ListCard(props) {
     }
 
     function handleLike(){
+        if(auth.user.userName ==="Guest"){
+            store.setErrorMessage("You must create an account to like a list!");
+            return;
+        }
         let likedByList = idNamePair.likedBy;
         
         for(let i = 0; i < likedByList.length; i++){
@@ -121,6 +129,10 @@ function ListCard(props) {
 
 
     function handleDislike(){
+        if(auth.user.userName ==="Guest"){
+            store.setErrorMessage("You must create an account to dislike a list!");
+            return;
+        }
         let dislikedByList = idNamePair.dislikedBy;
         
         for(let i = 0; i < dislikedByList.length; i++){
@@ -178,7 +190,9 @@ function ListCard(props) {
     }
     let isOpen = false;
     function setNewListCardId(event) {
-        store.updateListViewsById(idNamePair._id);
+        if(store.listcardExpanded !== idNamePair._id){
+            store.updateListViewsById(idNamePair._id);
+        }
         store.setCurrentListWithoutChangingPage(idNamePair._id);
         //if(idNamePair.published !== "false")
         store.setListCardExpanded(idNamePair._id);
@@ -236,7 +250,8 @@ function ListCard(props) {
                             </IconButton>
                     </span>
                     :
-                    <span></span>}
+                    <span></span>
+                    }
 
                     <div id="list-card-by-text">
                         {"By: "}
