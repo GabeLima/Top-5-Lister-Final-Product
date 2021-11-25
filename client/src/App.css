@@ -274,6 +274,11 @@ body {
   text-decoration: underline;
   cursor: pointer;
 }
+
+#list-card-liked-or-disliked-color {
+  color:rgb(104, 104, 216);
+}
+
 .items-and-comments-container {
   position: relative;
   padding: 0;

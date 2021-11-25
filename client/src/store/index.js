@@ -432,6 +432,7 @@ function GlobalStoreContextProvider(props) {
 
     // THIS FUNCTION PROCESSES CLOSING THE CURRENTLY LOADED LIST
     store.closeCurrentList = function () {
+        localListCardId = null;
         storeReducer({
             type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
             payload: {}
@@ -746,6 +747,23 @@ function GlobalStoreContextProvider(props) {
                 type: GlobalStoreActionType.SET_CURRENT_LIST,
                 payload: store.currentList
             });
+        }
+    }
+
+    //actually saves the items.
+    store.updateListLikesAndDislikes = async function (id, likedBy, dislikedBy) {
+        let response = await api.getTop5ListById(id);
+        if (response.data.success){
+            let top5List = response.data.top5List;
+            top5List.likedBy = likedBy;
+            top5List.dislikedBy = dislikedBy;
+            response = await api.updateTop5ListById(id, top5List);
+            if (response.data.success) {
+                storeReducer({
+                    type: GlobalStoreActionType.SET_CURRENT_LIST,
+                    payload: store.currentList
+                });
+            }
         }
     }
 

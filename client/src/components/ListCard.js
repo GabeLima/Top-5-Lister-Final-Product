@@ -26,6 +26,7 @@ function ListCard(props) {
     //let idNamePair = store.idNamePairs;
 
     function handleLoadList(event, id) {
+        event.stopPropagation();
         if (!event.target.disabled) {
             // CHANGE THE CURRENT LIST
             store.setCurrentList(id);
@@ -83,12 +84,104 @@ function ListCard(props) {
     }
 
     function handleSelectUser(event, userName) {
+        event.stopPropagation();
         //alert(event.target);
         //store.setUserListsView();
         store.setLocalSearchText(userName);
         document.getElementById("search-bar").value = userName;
         store.setUserListsView();
         //store.resetLocalListCardId();
+    }
+
+    function handleLike(){
+        //store.setCurrentListWithoutChangingPage(idNamePair._id);
+        let likedByList = idNamePair.likedBy;
+        
+        for(let i = 0; i < likedByList.length; i++){
+            if(likedByList[i] === auth.user.userName){ //If its already liked, remove the like and return
+                likedByList.splice(i, 1);
+                idNamePair.likedBy = likedByList;
+                store.updateListLikesAndDislikes(idNamePair._id, idNamePair.likedBy, idNamePair.dislikedBy);
+                //store.currentList.likedBy = idNamePair.likedBy; 
+                //store.updateCurrentList();
+                return;
+            }
+        }
+        //If we made it here, lets check the disliked list and remove from there
+        let dislikedByList = idNamePair.dislikedBy;
+        
+        for(let i = 0; i < dislikedByList.length; i++){
+            if(dislikedByList[i] === auth.user.userName){ //If its disliked, remove the dislike
+                dislikedByList.splice(i, 1);
+                idNamePair.dislikedBy = dislikedByList;
+                //store.updateListLikesAndDislikes(idNamePair._id, idNamePair.likedBy, idNamePair.dislikedBy);
+                //store.currentList.dislikedBy = idNamePair.dislikedBy; 
+                break;
+            }
+        }
+        //Finally add the like
+        idNamePair.likedBy.push(auth.user.userName);
+        store.updateListLikesAndDislikes(idNamePair._id, idNamePair.likedBy, idNamePair.dislikedBy);
+        //store.currentList.likedBy = idNamePair.likedBy; 
+        //store.updateCurrentList();
+    }
+
+
+    function handleDislike(){
+        //await store.setCurrentListWithoutChangingPage(idNamePair._id);
+        let dislikedByList = idNamePair.dislikedBy;
+        
+        for(let i = 0; i < dislikedByList.length; i++){
+            if(dislikedByList[i] === auth.user.userName){ //If its disliked, remove the dislike and reurn
+                dislikedByList.splice(i, 1);
+                idNamePair.dislikedBy = dislikedByList;
+                store.updateListLikesAndDislikes(idNamePair._id, idNamePair.likedBy, idNamePair.dislikedBy);
+                //store.currentList.dislikedBy = idNamePair.dislikedBy; 
+                //store.updateCurrentList();
+                return;
+            }
+        }
+
+        let likedByList = idNamePair.likedBy;
+        
+        for(let i = 0; i < likedByList.length; i++){
+            if(likedByList[i] === auth.user.userName){ //If its already liked, remove the like
+                likedByList.splice(i, 1);
+                idNamePair.likedBy = likedByList;
+                
+                //store.currentList.likedBy = idNamePair.likedBy; 
+                break;
+            }
+        }
+        //If we made it here, lets check the disliked list and remove from there
+        //Finally add the like
+        idNamePair.dislikedBy.push(auth.user.userName);
+        store.updateListLikesAndDislikes(idNamePair._id, idNamePair.likedBy, idNamePair.dislikedBy);
+        //store.currentList.dislikedBy = idNamePair.dislikedBy; 
+        //store.setCurrentListWithoutChangingPage(idNamePair._id);
+        //store.updateCurrentList();
+    }
+
+    function isLikedByThisUser(){
+        let likedByList = idNamePair.likedBy;
+        
+        for(let i = 0; i < likedByList.length; i++){
+            if(likedByList[i] === auth.user.userName){ //If its liked, return true
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function isDislikedByThisUser(){
+        let dislikedByList = idNamePair.dislikedBy;
+        
+        for(let i = 0; i < dislikedByList.length; i++){
+            if(dislikedByList[i] === auth.user.userName){ //If its liked, return true
+                return true;
+            }
+        }
+        return false;
     }
 
     function handleUpdateText(event) {
@@ -133,14 +226,16 @@ function ListCard(props) {
                 <Box sx={{ p: 2, flexGrow: 1, marginTop:'-0%' }}>
                     {idNamePair.name}
                     <span id="list-card-likes-and-dislikes">
-                        <IconButton onClick={(event) => {
-                                //handleDeleteList(event, idNamePair._id)
+                        <IconButton id={isLikedByThisUser() ? "list-card-liked-or-disliked-color" : ""} onClick={(event) => {
+                                event.stopPropagation();
+                                handleLike();
                             }} aria-label='Thumbs up'>
                                 <ThumbUp style={{fontSize:'24pt'}} />
                                 {idNamePair.likedBy.length}
                             </IconButton>
-                            <IconButton onClick={(event) => {
-                                //handleDeleteList(event, idNamePair._id)
+                            <IconButton id={isDislikedByThisUser() ? "list-card-liked-or-disliked-color" : ""} onClick={(event) => {
+                                event.stopPropagation();
+                                handleDislike();
                             }} aria-label='Thumbs Down'>
                                 <ThumbDown style={{fontSize:'24pt'}} />
                                 {idNamePair.dislikedBy.length}
