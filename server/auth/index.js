@@ -8,7 +8,7 @@ function authManager() {
             if (!token) {
                 //create the cookie here?
 
-                console.log("Invalid token!");
+                //console.log("Invalid token!");
                 return res.status(401).json({
                     loggedIn: false,
                     user: null,

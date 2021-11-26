@@ -997,7 +997,7 @@ function GlobalStoreContextProvider(props) {
             response = await api.updateTop5ListById(id, top5List);
             if (response.data.success) {
                 storeReducer({
-                    type: GlobalStoreActionType.SET_CURRENT_LIST,
+                    type: GlobalStoreActionType.SET_CURRENT_LIST_ON_PAGE,
                     payload: store.currentList
                 });
             }

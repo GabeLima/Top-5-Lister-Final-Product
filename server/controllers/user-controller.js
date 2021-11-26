@@ -17,7 +17,7 @@ getLoggedIn = async (req, res) => {
                 comments: loggedInUser.comments,
                 userName: loggedInUser.userName
             }
-        }).send();
+        });
     })
 }
 
@@ -38,10 +38,11 @@ logoutUser = async (req, res) => {
         console.error(err);
         res.status(500).send();
     }
-        return res.status(200).json({
-            loggedIn: false,
-            user: null
-        }).send();
+        return res.status(200);
+        // return res.status(200).json({
+        //     loggedIn: false,
+        //     user: null
+        // });
     })
 }
 
@@ -101,9 +102,9 @@ function compareAsync(param1, param2) {
 
 loginUser = async (req, res) => {
     try{
-        console.log("Inside loginUser!");
+        //console.log("Inside loginUser!");
         //auth.verify(req, res, async function () {
-            console.log("Trying to log in the user, heres the request details: ", req.body);
+            //console.log("Trying to log in the user, heres the request details: ", req.body);
             const { email, password } = req.body;
             //BREAK ON A MISSING EMAIL OR PASSWORD
             if (!email || !password) {
@@ -112,9 +113,9 @@ loginUser = async (req, res) => {
                     .status(400)
                     .json({ errorMessage: "Please enter all required fields." });
             }
-            console.log("Email we're querying by: ", email);
+            //console.log("Email we're querying by: ", email);
             var loggedInUser = await User.findOne({ email: email });
-            console.log("loggedInUser: ", loggedInUser);
+            //console.log("loggedInUser: ", loggedInUser);
             //BREAK IF WE CAN'T FIND THE EMAIL
             if(loggedInUser === null){
                 loggedInUser = await User.findOne({ userName: email });
@@ -182,7 +183,7 @@ loginUser = async (req, res) => {
                         comments: loggedInUser.comments,
                         userName: loggedInUser.userName
                     }
-                }).send();
+                });
             }
             //auth.verify(req, res, async function (){}
     }catch(Exception){
@@ -194,7 +195,7 @@ registerUser = async (req, res) => {
     try {
         console.log("Attempting to register the user");
         const { firstName, lastName, email, password, passwordVerify, userName } = req.body;
-        if (!firstName || !lastName || !email || !password || !passwordVerify) {
+        if (!firstName || !lastName || !email || !password || !passwordVerify || !userName) {
             return res
                 .status(400)
                 .json({ errorMessage: "Please enter all required fields." });
@@ -244,8 +245,8 @@ registerUser = async (req, res) => {
             firstName, lastName, email, passwordHash, likedLists, dislikedLists, comments, userName
         });
         const savedUser = await newUser.save();
-        console.log("newUser: ", newUser);
-        console.log("saveduser: ", savedUser);
+        //console.log("newUser: ", newUser);
+        //console.log("saveduser: ", savedUser);
         // LOGIN THE USER
         const token = auth.signToken(savedUser);
 

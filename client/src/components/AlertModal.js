@@ -32,11 +32,11 @@ function AlertModal(props) {
     let errorMessage = "";
     if(store){
         errorMessage = store.errorMessage;
-        if(errorMessage != null && !open){
+        if(errorMessage !== null && !open){
             handleOpen();
         }
     }
-    if(name != "" && open != true){
+    if(name !== "" && open !== true){
         handleOpen();
     }
     

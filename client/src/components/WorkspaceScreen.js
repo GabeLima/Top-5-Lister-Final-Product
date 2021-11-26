@@ -30,8 +30,8 @@ function WorkspaceScreen() {
 
     function handleOnBlur(event) {
         if(text !== ""){
-            let id = event.target.id.substring("list-".length);
-            console.log("Onblur called, text: ", text);
+            //let id = event.target.id.substring("list-".length);
+            //console.log("Onblur called, text: ", text);
             handleUpdateText(event);
             // store.changeListName(id, text);
         }
@@ -47,7 +47,7 @@ function WorkspaceScreen() {
         store.closeCurrentList();
     }
     function onSave(){
-        if(text!=""){
+        if(text!==""){
             store.currentList.name = text;
         }
         //update the list
@@ -57,7 +57,7 @@ function WorkspaceScreen() {
     }
 
     function onPublish(){
-        if(text!=""){
+        if(text!==""){
             store.currentList.name = text;
         }
         var today = new Date();
@@ -97,7 +97,7 @@ function WorkspaceScreen() {
         }
         //Otherwise do any of our published lists match our currentLists name?
         let currentName = store.currentList.name;
-        if(text!=""){
+        if(text!==""){
             currentName = text;
         }
         if(store.currentList.name === "" || !alphaNumericCheck(currentName)){

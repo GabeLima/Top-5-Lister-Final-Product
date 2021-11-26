@@ -4,7 +4,6 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
 import IconButton from '@mui/material/IconButton';
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AuthContext from '../auth';
 import ThumbUp from '@mui/icons-material/ThumbUp'
@@ -31,11 +30,6 @@ function ListCard(props) {
             // CHANGE THE CURRENT LIST
             store.setCurrentList(id);
         }
-    }
-
-    function handleToggleEdit(event) {
-        event.stopPropagation();
-        toggleEdit();
     }
 
     function toggleEdit() {
@@ -195,8 +189,6 @@ function ListCard(props) {
         return "Published: ";
     }
 
-    let isOpen = false;
-
     function setNewListCardId(event) {
         if(store.listcardExpanded !== idNamePair._id){
             //store.setListCardExpanded(idNamePair._id);
@@ -279,7 +271,7 @@ function ListCard(props) {
                     :
                     <div id="list-card-by-text"><span> <br></br></span></div> //Don't load the by-user text
                     }
-                    {store.listcardExpanded!= null && store.listcardExpanded == idNamePair._id? 
+                    {store.listcardExpanded!= null && store.listcardExpanded === idNamePair._id? 
                     <div className="items-and-comments-container">
                         <ol id="list-card-items">
                            <li>{idNamePair.items[0]}</li>

@@ -14,7 +14,7 @@ function Statusbar() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
     const history = useHistory();
-    let text ="";
+    // let text ="";
     let pathName = history.location.pathname;
     console.log(pathName);
     function handleCreateNewList() {
@@ -59,8 +59,8 @@ function Statusbar() {
         console.log("store.onYourListsPage", store.onYourListsPage);
         return false;
     }
-    if (store.currentList && store.listOpen)
-        text = "Top 5 " + store.currentList.name;
+    // if (store.currentList && store.listOpen)
+    //     text = "Top 5 " + store.currentList.name;
     //return(<div></div>);
     if(!auth.loggedIn === true){ // or have to make a check that we're in guest mode...
         return(<div></div>);

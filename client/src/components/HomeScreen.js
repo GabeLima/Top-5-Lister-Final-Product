@@ -54,7 +54,7 @@ const HomeScreen = () => {
         let idNamePairs = store.idNamePairs;
         idNamePairs.sort(function(pair1, pair2){
             if(determineDateValue(pair1.published) > determineDateValue(pair2.published)) return -1;
-            if(determineDateValue(pair1.published) == determineDateValue(pair2.published)) return 0;
+            if(determineDateValue(pair1.published) === determineDateValue(pair2.published)) return 0;
             if(determineDateValue(pair1.published) <  determineDateValue(pair2.published)) return 1;
         });
         store.loadCustomIDNamePairs(idNamePairs);
@@ -65,7 +65,7 @@ const HomeScreen = () => {
         let idNamePairs = store.idNamePairs;
         idNamePairs.sort(function(pair1, pair2){
             if(determineDateValue(pair1.published) < determineDateValue(pair2.published)) return -1;
-            if(determineDateValue(pair1.published) == determineDateValue(pair2.published)) return 0;
+            if(determineDateValue(pair1.published) === determineDateValue(pair2.published)) return 0;
             if(determineDateValue(pair1.published) >  determineDateValue(pair2.published)) return 1;
         });
         store.loadCustomIDNamePairs(idNamePairs);
@@ -98,7 +98,7 @@ const HomeScreen = () => {
             let p1Views = parseInt(pair1.views);
             let p2Views = parseInt(pair2.views);
             if(p1Views > p2Views) return -1;
-            if(p1Views == p2Views) return 0;
+            if(p1Views === p2Views) return 0;
             if(p1Views <  p2Views) return 1;
         });
         store.loadCustomIDNamePairs(idNamePairs);
@@ -108,7 +108,7 @@ const HomeScreen = () => {
         let idNamePairs = store.idNamePairs;
         idNamePairs.sort(function(pair1, pair2){
             if(pair1.likedBy.length > pair2.likedBy.length) return -1;
-            if(pair1.likedBy.length == pair2.likedBy.length) return 0;
+            if(pair1.likedBy.length === pair2.likedBy.length) return 0;
             if(pair1.likedBy.length <  pair2.likedBy.length) return 1;
         });
         store.loadCustomIDNamePairs(idNamePairs);
@@ -118,7 +118,7 @@ const HomeScreen = () => {
         let idNamePairs = store.idNamePairs;
         idNamePairs.sort(function(pair1, pair2){
             if(pair1.dislikedBy.length > pair2.dislikedBy.length) return -1;
-            if(pair1.dislikedBy.length == pair2.dislikedBy.length) return 0;
+            if(pair1.dislikedBy.length === pair2.dislikedBy.length) return 0;
             if(pair1.dislikedBy.length <  pair2.dislikedBy.length) return 1;
         });
         store.loadCustomIDNamePairs(idNamePairs);

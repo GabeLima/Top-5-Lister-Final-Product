@@ -33,7 +33,7 @@ function DeleteModal(props) {
     if (store.listMarkedForDeletion) {
         name = store.listMarkedForDeletion.name;
     }
-    if(name != "" && open != true){
+    if(name !== "" && open !== true){
         handleOpen();
     }
     // else{
@@ -51,7 +51,6 @@ function DeleteModal(props) {
         store.hideDeleteListModal();
         handleClose();
     }
-    let visibleClass = "modal";
     console.log("value of open passed from props: ", props.open);
     const style = {
         display: "flex",
