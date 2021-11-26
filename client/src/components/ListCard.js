@@ -59,7 +59,7 @@ function ListCard(props) {
                     store.setErrorMessage("You need to register an account to comment on a list!");
                     return;
                 }
-                let newComment = [idNamePair.userName, event.target.value];
+                let newComment = [auth.user.userName, event.target.value];
 
                 store.currentList.comments.push(newComment);
                 console.log("Creating a comment for comment: " + event.target.value);
@@ -188,16 +188,27 @@ function ListCard(props) {
     function handleUpdateText(event) {
         setText(event.target.value);
     }
+    function derivePublishedOrUpdated(){
+        if(idNamePair.isCommunityList === "true"){
+            return "Updated: ";
+        }
+        return "Published: ";
+    }
+
     let isOpen = false;
+
     function setNewListCardId(event) {
         if(store.listcardExpanded !== idNamePair._id){
+            //store.setListCardExpanded(idNamePair._id);
             store.updateListViewsById(idNamePair._id);
         }
+        console.log("Setting new id to: ", idNamePair._id);
         store.setCurrentListWithoutChangingPage(idNamePair._id);
         //if(idNamePair.published !== "false")
         store.setListCardExpanded(idNamePair._id);
         //store.updateCurrentList();
     }
+    
     let isPublished = idNamePair.published;
     if(isPublished !== "false"){
         isPublished = true;
@@ -258,13 +269,16 @@ function ListCard(props) {
                     :
                     <span></span>
                     }
-
+                    {idNamePair.isCommunityList==="false"?
                     <div id="list-card-by-text">
                         {"By: "}
                         <span id="list-card-by-text-colored" onClick = {(event)=> handleSelectUser(event, idNamePair.userName)}>
                              {idNamePair.userName}
                         </span> 
                     </div>
+                    :
+                    <div id="list-card-by-text"><span> <br></br></span></div> //Don't load the by-user text
+                    }
                     {store.listcardExpanded!= null && store.listcardExpanded == idNamePair._id? 
                     <div className="items-and-comments-container">
                         <ol id="list-card-items">
@@ -308,7 +322,7 @@ function ListCard(props) {
                     {isPublished ?
                         
                         <span id="list-card-by-text">
-                            {"Published: "}
+                            {derivePublishedOrUpdated()}
                             <span id="list-card-published-color">
                                 {idNamePair.published}
                             </span>

@@ -538,6 +538,7 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.updateListViewsById = async function (id) {
+        localListCardId = id;
         let response = await api.getTop5ListById(id);
         if (response.data.success){
             let top5List = response.data.top5List;
@@ -608,6 +609,9 @@ function GlobalStoreContextProvider(props) {
                 let newResponse = await api.getTop5ListById(pairsArray[i]._id);
                 if(newResponse.data.success){
                     let top5List = newResponse.data.top5List;
+                    if(top5List === null){
+                        continue;
+                    }
                     if(top5List.published !== "false" && store.startsWith(top5List.name) && top5List.isCommunityList === "false"){
                         nonCommunityLists.push(pairsArray[i]);
                         //newArray.push(pairsArray[i]);
@@ -617,6 +621,22 @@ function GlobalStoreContextProvider(props) {
                     }
                 }
             }
+            if(localSearchText !== ""){ //Use the current lists if the search text isnt empty
+                for(let i =0; i < communityLists.length; i++){
+                    newArray.push(communityLists[i]);
+                }
+                return newArray;
+            }
+            //Delete every existing community list in the database, if we're not already on the community lists page.
+            //if(localOnCommunityLists !== true){
+            for(let i =0; i < communityLists.length; i++){
+                let response = await api.deleteTop5ListById(communityLists[i]._id);
+                if (!response.data.success) {
+                    console.log("Error deleting community list w/ id: ", communityLists[i]._id);
+                }
+            }
+            //}
+
             //Generate the new community lists, if we have any comments, likes or dislikes, or views we can port over from the old community lists- do it
             let checkedLists = [];
             for(let i = 0; i < nonCommunityLists.length; i++){
@@ -636,8 +656,10 @@ function GlobalStoreContextProvider(props) {
                     originalCaps.push(nonCommunityLists[i].items[j]); //Save the capitalization forms of the items
                 }
                 // //Add the comments
-                for(let j = 0; j < communityLists[j].length; j++){ //iterate through the community lists
+                for(let j = 0; j < communityLists.length; j++){ //iterate through the community lists
                     if(communityLists[j].name.toLowerCase() === nonCommunityLists[i].name.toLowerCase()){ //The names match, port over the old comments, likes, dislikes, and views
+                        //Set the same id
+                        nonCommunityLists[i]._id = communityLists[j]._id; 
                         //comments
                         for(let y = 0; y < communityLists[j].comments.length; y++){
                             allComments.push(communityLists[j].comments[y]);
@@ -651,7 +673,7 @@ function GlobalStoreContextProvider(props) {
                             allDislikes.push(communityLists[j].dislikedBy[y]);
                         }
                         //views
-                        allViews += communityLists[j].views;
+                        allViews += parseInt(communityLists[j].views);
                     }
                 }
 
@@ -675,11 +697,56 @@ function GlobalStoreContextProvider(props) {
                 let sortedMap = new Map([...rankingMap.entries()].sort((a, b) => b[1] - a[1]));
                 //Take the first 5 entries 
                 let newList = nonCommunityLists[i];
+                newList.comments = allComments;
+                newList.likedBy = allLikes;
+                newList.dislikedBy = allDislikes;
+                newList.views = allViews;
+                //Set the ranked items
+                let mapNum = 0;
+                console.log("rankingMap: ", sortedMap);
+                for (let [key, value] of sortedMap) {
+                    newList.items[mapNum++] = key;
+                    if(mapNum >= 5){
+                        break;
+                    }
+                    console.log(key + " = " + value);
+                }
+                // Create the top 5 list
+                let payload = {
+                    name: newList.name,
+                    items: newList.items,
+                    ownerEmail: "Community List- No email!",
+                    published: newList.published,
+                    userName: "Community List- No userName!",
+                    comments: newList.comments,
+                    likedBy: newList.likedBy,
+                    dislikedBy:newList.dislikedBy,
+                    views:newList.views,
+                    isCommunityList: "true"
+                };
+                console.log("Creating top5List");
+                let response = await api.createTop5List(payload);
+                if (response.data.success) {
+                    let top5List = response.data.top5List;
+                    console.log("local list card id: ", localListCardId);
+                    console.log("old list id we're replacing: ", localListCardId);
+                    if(newList._id === localListCardId){
+                        store.setListCardExpanded(top5List._id);
+                    }
+                    newList._id = top5List._id;
+                    newList.userName = top5List.userName;
+                }
+                
+
+                newList.isCommunityList = "true";
+                console.log(newList);
+                newArray.push(newList);
                 // for(let k = 0; k < newList.items.length; k++){
                 //     newList.items[k] = 
                 // }
                 checkedLists.push(nonCommunityLists[i]);
             }
+            
 
 
 
@@ -702,8 +769,8 @@ function GlobalStoreContextProvider(props) {
     store.startsWith = function(text){
         let localSearchTextLowercase = localSearchText.toLowerCase();
         text = text.toLowerCase();
-        console.log("localSearchText: ", localSearchTextLowercase);
-        console.log("text: ", text);
+        //console.log("localSearchText: ", localSearchTextLowercase);
+        //console.log("text: ", text);
         for(let i = 0; i < localSearchTextLowercase.length; i ++){
             if(localSearchTextLowercase[i] !== text[i]){
                 return false;
@@ -990,6 +1057,7 @@ function GlobalStoreContextProvider(props) {
         return localSearchText;
     }
     store.setListCardExpanded = function(newListCardId){
+        localListCardId = newListCardId;
         storeReducer({
             type: GlobalStoreActionType.NEW_LIST_CARD,
             payload:newListCardId
