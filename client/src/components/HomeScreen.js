@@ -72,7 +72,7 @@ const HomeScreen = () => {
     }
 
     function determineDateValue(date){
-        if(date==="false") return -1;
+        if(date==="false") return 9999999999;
         //let date = 0;
         let firstSpace = date.indexOf(" ");
         let month = date.substring(0, firstSpace);

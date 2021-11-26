@@ -80,7 +80,7 @@ export default function AppBanner() {
         initials = auth.user.firstName.charAt(0) + auth.user.lastName.charAt(0);
         //initials = auth.getInitials();
         menu = loggedInMenu;
-        if (store.currentList) {
+        if (store.listOpen === true) { //Only render if list Open
             editToolbar = <EditToolbar />;
         }
     }

@@ -69,6 +69,9 @@ export default function SplashScreen() {
                     Guest
                 </Fab>
             </div>
+            <div id = "splash-screen-developed-text">
+                <h4 >Developed by Gabriello Lima </h4>
+            </div>
         </div>
     )
 }

@@ -303,6 +303,7 @@ function ListCard(props) {
                                     }
                             </ul>
                             <input
+                                disabled={!isPublished}
                                 type="text"
                                 id="comment-bar"
                                 placeholder={"Add a comment!"}

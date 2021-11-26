@@ -84,12 +84,9 @@ function WorkspaceScreen() {
         }
         let items = store.currentList.items;
         for(let i = 0; i < items.length; i ++){
-            if(items[i] === ""){
+            if(items[i] === "" || !alphaNumericCheck(items[i])){
                 return true;
             }
-        }
-        if(store.currentList.name === ""){
-            return true;
         }
         for(let i = 0; i < items.length; i ++){
             for(let k = 0; k < items.length; k ++){
@@ -99,9 +96,31 @@ function WorkspaceScreen() {
             }
         }
         //Otherwise do any of our published lists match our currentLists name?
+        let currentName = store.currentList.name;
+        if(text!=""){
+            currentName = text;
+        }
+        if(store.currentList.name === "" || !alphaNumericCheck(currentName)){
+            return true;
+        }
+        for(let i = 0; i < store.idNamePairs.length; i++){
+            if(store.currentList._id !== store.idNamePairs[i]._id && store.currentList.userName === store.idNamePairs[i].userName && currentName === store.idNamePairs[i].name){ // if its not the same id and its the same name by the same user
+                return true;
+            }
+        }
         return false;
     }
 
+    function alphaNumericCheck(string){
+        if(String(string).length === 0){
+            return true;
+        }
+        var regEx = /^[0-9a-zA-Z]+$/;
+        if(String(string).charAt(0).match(regEx)){
+            return true;
+        }
+          return false;
+    }
 
     let cardElement = undefined;
     if(store.currentList != null){

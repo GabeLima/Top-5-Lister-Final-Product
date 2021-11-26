@@ -4,7 +4,7 @@ function authManager() {
     verify = function (req, res, next) {
         try {
             const token = req.cookies.token;
-            console.log("token: ", token);
+            //console.log("token: ", token);
             if (!token) {
                 //create the cookie here?
 

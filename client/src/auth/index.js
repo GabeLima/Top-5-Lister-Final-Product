@@ -61,6 +61,7 @@ function AuthContextProvider(props) {
         try{
             const response = await api.logoutUser();
             if (response.status === 200) {
+                store.resetPageViews();
                 authReducer({
                     type: AuthActionType.GET_LOGGED_IN,
                     payload: {

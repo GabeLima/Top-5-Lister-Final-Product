@@ -13,6 +13,7 @@
   --swatch-accent: #669966;
   --swatch-status: #123456;
   --my-font-family: "Robaaaoto";
+  --swatch-user: blueviolet;
   --bounceEasing: cubic-bezier(0.51, 0.92, 0.24, 1.15);
 }
 
@@ -68,6 +69,16 @@ body {
   padding-bottom: 5%;
   height:80%;
   vertical-align: center;
+}
+#splash-screen-developed-text{
+  font-size: 1vw;
+  color:black;
+  position: relative;
+  float: left;
+  margin-top:58%;
+  margin-left:-10%;
+  /* margin-top:55%;
+  margin-left:-04%; */
 }
 #splash-screen-welcome-text{
   font-size: 7vw;
@@ -258,7 +269,7 @@ body {
 }
 #list-card-by-text-colored {
   font-size: 15pt;
-  color:blueviolet;
+  color:var(--swatch-user);
   text-decoration: underline;
   cursor: pointer;
 }
@@ -302,7 +313,7 @@ body {
 
 #list-card-items {
   /* {color:"#cfa838", backgroundColor:"#302c74", width:"45%", position:"relative"} */
-  color: #cfa838;
+  color: #ffe082;
   background-color:#302c74;
   font-weight: bold;
   width:45%;
@@ -333,7 +344,7 @@ body {
   position: relative;
   font-size: 15pt;
   color:black;
-  background-color: #cfa838;
+  background-color: #ffdc74;
   display: inline-block;
   vertical-align: top;
   width:45%;
@@ -347,7 +358,7 @@ body {
 }
 #list-card-comments-user {
   font-size: 15pt;
-  color:blueviolet;
+  color:var(--swatch-user);
   text-decoration: underline;
   cursor: pointer;
 }

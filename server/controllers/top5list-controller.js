@@ -34,7 +34,7 @@ createTop5List = (req, res) => {
 
 updateTop5List = async (req, res) => {
     const body = req.body
-    console.log("updateTop5List: " + JSON.stringify(body));
+    //console.log("updateTop5List: " + JSON.stringify(body));
     if (!body) {
         return res.status(400).json({
             success: false,
@@ -43,7 +43,7 @@ updateTop5List = async (req, res) => {
     }
 
     Top5List.findOne({ _id: req.params.id }, (err, top5List) => {
-        console.log("top5List found: " + JSON.stringify(top5List));
+        //console.log("top5List found: " + JSON.stringify(top5List));
         if (err) {
             return res.status(404).json({
                 err,
@@ -52,7 +52,7 @@ updateTop5List = async (req, res) => {
         }
 
         top5List.name = body.name;
-        console.log("top5list name: ", body.name);
+        //console.log("top5list name: ", body.name);
         top5List.items = body.items;
         top5List.published = body.published;
         top5List.comments = body.comments;
@@ -63,7 +63,7 @@ updateTop5List = async (req, res) => {
         top5List
             .save()
             .then(() => {
-                console.log("SUCCESS!!!");
+                //console.log("SUCCESS!!!");
                 return res.status(200).json({
                     success: true,
                     id: top5List._id,

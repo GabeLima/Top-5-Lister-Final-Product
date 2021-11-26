@@ -21,7 +21,8 @@ function Statusbar() {
         store.createNewList();
     }
     function disableStatusBar(){
-        if(auth.user.userName === "Guest" || store.listOpen){
+        if(auth.user.userName === "Guest" || store.listOpen === true){
+            console.log("store.listOpen:", store.listOpen);
             return true;
         }
         return false;
@@ -52,8 +53,10 @@ function Statusbar() {
     }
     function shouldDisplayAddLists(){
         if(store.onYourListsPage){
+            console.log("store.onYourListsPage", store.onYourListsPage);
             return true;
         }
+        console.log("store.onYourListsPage", store.onYourListsPage);
         return false;
     }
     if (store.currentList && store.listOpen)

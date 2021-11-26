@@ -33,7 +33,8 @@ export const GlobalStoreActionType = {
     ON_ALL_LISTS: "ON_ALL_LISTS",
     ON_USER_LISTS: "ON_USER_LISTS",
     ON_COMMUNITY_LISTS: "ON_COMMUNITY_LISTS",
-    NEW_LIST_CARD: "NEW_LIST_CARD"
+    NEW_LIST_CARD: "NEW_LIST_CARD",
+    SET_CURRENT_LIST_ON_PAGE:"SET_CURRENT_LIST_ON_PAGE"
 
 }
 
@@ -71,7 +72,7 @@ function GlobalStoreContextProvider(props) {
 
     // SINCE WE'VE WRAPPED THE STORE IN THE AUTH CONTEXT WE CAN ACCESS THE USER HERE
     const { auth } = useContext(AuthContext);
-    if(auth != null && auth.user!= null && auth.user.userName=== "Guest"){
+    if(auth != null && auth.user!= null && auth.user.userName=== "Guest" && !(localOnAllLists === true || localOnUserLists === true || localOnCommunityLists === true)){
         localOnYourLists = false;
         localOnAllLists = true;
     }
@@ -204,6 +205,24 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     errorMessage: null,
                     listOpen: true,
+                    listHasBeenEdited:false,
+                    onYourListsPage: store.onYourListsPage,
+                    onUserListsPage: store.onUserListsPage,
+                    onAllListsPage: store.onAllListsPage,
+                    onCommunityListsPage: store.onCommunityListsPage,
+                    listcardExpanded: localListCardId
+                });
+            }
+            case GlobalStoreActionType.SET_CURRENT_LIST_ON_PAGE: {
+                return setStore({
+                    idNamePairs: store.idNamePairs,
+                    currentList: payload,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: false,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: null,
+                    errorMessage: null,
+                    listOpen: false,
                     listHasBeenEdited:false,
                     onYourListsPage: store.onYourListsPage,
                     onUserListsPage: store.onUserListsPage,
@@ -369,10 +388,10 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     errorMessage: null,
                     listOpen: false,
-                    onYourListsPage: false,
-                    onAllListsPage: false,
-                    onUserListsPage: false,
-                    onCommunityListsPage: false,
+                    onYourListsPage: store.onYourListsPage,
+                    onAllListsPage: store.onAllListsPage,
+                    onUserListsPage: store.onUserListsPage,
+                    onCommunityListsPage: store.onCommunityListsPage,
                     listHasBeenEdited:false,
                     listcardExpanded: payload
                 });
@@ -410,7 +429,7 @@ function GlobalStoreContextProvider(props) {
                                 if(newResponse.data.success){
                                     let top5List = newResponse.data.top5List;
                                     if(top5List.ownerEmail === auth.user.email){
-                                        console.log("Emails are equivalent, ", top5List.ownerEmail);
+                                        //console.log("Emails are equivalent, ", top5List.ownerEmail);
                                         newArray.push(pairsArray[i]);
                                         //console.log("Invalid email detected! Aborting accessing.");
                                         //return;
@@ -495,8 +514,9 @@ function GlobalStoreContextProvider(props) {
         const response = await api.getTop5ListPairs();
         if (response.data.success) {
             let pairsArray = response.data.idNamePairs;
-            console.log("New id name pairs after loading:", pairsArray);
+            //console.log("New id name pairs after loading:", pairsArray);
             let newArray = await store.loadInitialLists(pairsArray);
+            console.log("Filtered id name pairs:", newArray);
             storeReducer({
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
                 payload: newArray
@@ -525,7 +545,7 @@ function GlobalStoreContextProvider(props) {
         const response = await api.getTop5ListPairs();
         if (response.data.success) {
             let pairsArray = response.data.idNamePairs;
-            console.log("New id name pairs after loading:", pairsArray);
+            console.log("New id name pairs after loading COMMENT:", pairsArray);
             let newArray = await store.loadInitialLists(pairsArray);
             storeReducer({
                 type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
@@ -543,14 +563,17 @@ function GlobalStoreContextProvider(props) {
         if (response.data.success){
             let top5List = response.data.top5List;
             top5List.views = parseInt(top5List.views);
-            top5List.views +=1;
+            if(top5List.published !== "false"){
+                console.log("top5List.isPublished: ", top5List.published);
+                top5List.views +=1;
+            }
             //await store.updateCurrentList();
             response = await api.updateTop5ListById(id, top5List);
             if(response.data.success){
                 response = await api.getTop5ListPairs();
                 if (response.data.success) {
                     let pairsArray = response.data.idNamePairs;
-                    console.log("New id name pairs after loading:", pairsArray);
+                    console.log("New id name pairs after loading updateListViewsById:", pairsArray);
                     let newArray = await store.loadInitialLists(pairsArray);
                     storeReducer({
                         type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
@@ -621,7 +644,7 @@ function GlobalStoreContextProvider(props) {
                     }
                 }
             }
-            if(localSearchText !== ""){ //Use the current lists if the search text isnt empty
+            if(localSearchText !== "" || store.listcardExpanded !== null || store.onCommunityListsPage === true){ //Use the current lists if the search text isnt empty
                 for(let i =0; i < communityLists.length; i++){
                     newArray.push(communityLists[i]);
                 }
@@ -705,7 +728,15 @@ function GlobalStoreContextProvider(props) {
                 let mapNum = 0;
                 console.log("rankingMap: ", sortedMap);
                 for (let [key, value] of sortedMap) {
-                    newList.items[mapNum++] = key;
+                    //Get the old, uppercase value by checking through the originalCaps array
+                    let newKey = key;
+                    for(let k = 0; k < originalCaps.length; k++){
+                        if(key === originalCaps[k].toLowerCase()){
+                            newKey = originalCaps[k];
+                            break;
+                        }
+                    }
+                    newList.items[mapNum++] = newKey;
                     if(mapNum >= 5){
                         break;
                     }
@@ -884,7 +915,7 @@ function GlobalStoreContextProvider(props) {
             //response = await api.updateTop5ListById(top5List._id, top5List);
             //store.currentList = top5List;
             storeReducer({
-                type: GlobalStoreActionType.SET_CURRENT_LIST,
+                type: GlobalStoreActionType.SET_CURRENT_LIST_ON_PAGE,
                 payload: top5List
             });
             //store.updateCurrentList();
@@ -1014,6 +1045,7 @@ function GlobalStoreContextProvider(props) {
     }
     //FOR SETTING WHAT VIEW WE'RE IN
     store.setYourListsView = function(){
+        console.log("setYourListsView HAS BEEN CALLED----------");
         localOnYourLists = true;
         localOnAllLists = false;
         localOnUserLists = false;
@@ -1023,6 +1055,7 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.setAllListsView = function(){
+        console.log("setAllListsView HAS BEEN CALLED----------");
         localOnYourLists = false;
         localOnAllLists = true;
         localOnUserLists = false;
@@ -1032,6 +1065,7 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.setUserListsView = function(){
+        console.log("setUserListsView HAS BEEN CALLED----------");
         localOnYourLists = false;
         localOnAllLists = false;
         localOnUserLists = true;
@@ -1041,6 +1075,7 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.setCommunityListsView = function(){
+        console.log("setCommunityListsView HAS BEEN CALLED----------");
         localOnYourLists = false;
         localOnAllLists = false;
         localOnUserLists = false;
@@ -1070,6 +1105,16 @@ function GlobalStoreContextProvider(props) {
 
     store.resetLocalListCardId = function(){
         localListCardId = null;
+    }
+
+    
+    store.resetPageViews = function(){
+        localOnYourLists = true;
+        localOnAllLists = false;
+        localOnUserLists = false;
+        localOnCommunityLists = false;
+        localListCardId = null;
+        store.loadIdNamePairs();
     }
 
     return (
