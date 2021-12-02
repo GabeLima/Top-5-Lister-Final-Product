@@ -59,6 +59,7 @@ function AuthContextProvider(props) {
         try{
             const response = await api.logoutUser();
             if (response.status === 200) {
+                store.resetLocalSearchtext();
                 store.resetPageViews();
                 authReducer({
                     type: AuthActionType.GET_LOGGED_IN,
@@ -121,6 +122,8 @@ function AuthContextProvider(props) {
             const response = await api.loginUser(userData);
             console.log("Users gotten from the database: ", response);
             if (response.status === 200) {
+                // store.resetLocalSearchtext();
+                // store.setYourListsView();
                 console.log("Login status (from loginUser reducer: ", response.data.loggedIn);
                 console.log("User data: ", response.data.user);
                 authReducer({

@@ -62,7 +62,7 @@ function Statusbar() {
     // if (store.currentList && store.listOpen)
     //     text = "Top 5 " + store.currentList.name;
     //return(<div></div>);
-    if(!auth.loggedIn === true){ // or have to make a check that we're in guest mode...
+    if(!auth.loggedIn === true  || pathName.includes('/login' || pathName.includes('/register'))){ // or have to make a check that we're in guest mode...
         return(<div></div>);
     }
     

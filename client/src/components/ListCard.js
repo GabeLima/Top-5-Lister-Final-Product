@@ -214,16 +214,16 @@ function ListCard(props) {
     // }
     let reversedComments = comments.slice(0).reverse();
 
-    let cardBackgroundColor = "#fffcf4";
+    let cardBackgroundColor = "#e6bbad"; //#e6bbad
     if(isPublished){
-        cardBackgroundColor = "#e0d4f4";
+        cardBackgroundColor = "#ADD8E6";
     }
 
     let cardElement =
         <ListItem
             id={idNamePair._id}
             key={idNamePair._id}
-            sx={{ marginTop: '-15px', display: 'flex', p: 1 }}
+            sx={{ marginTop: '-15px', display: 'flex', p: 1}}
             //button
             onClick={setNewListCardId}
             //backgroundColor="black"
@@ -235,7 +235,10 @@ function ListCard(props) {
                 fontSize: '20pt',
                 width: '100%',
                 top:"0px",
-                backgroundColor: cardBackgroundColor
+                padding:"20px",
+                backgroundColor: cardBackgroundColor,
+                border:"20px solid white"
+                // background-clip: "content-box"
                 //marginTop:'0%'
             }}
         > 
@@ -274,22 +277,22 @@ function ListCard(props) {
                     {store.listcardExpanded!= null && store.listcardExpanded === idNamePair._id? 
                     <div className="items-and-comments-container">
                         <ol id="list-card-items">
-                           <li>{idNamePair.items[0]}</li>
+                           <li >{idNamePair.items[0]}</li>
                            <li>{idNamePair.items[1]}</li>
                            <li>{idNamePair.items[2]}</li>
                            <li>{idNamePair.items[3]}</li>
                            <li>{idNamePair.items[4]}</li>
                         </ol>
                         <div id="list-card-comments-container" >
-                            <ul id="list-card-comments"style={{listStyleType:"none", padding: 0, width:"100%"}}>
+                            <ul id="list-card-comments"style={{listStyleType:"none", padding: 0, width:"100%", borderLeft:"5px solid #ADD8E6", borderRight:"5px solid #ADD8E6"}}>
                                 {reversedComments.map(
                                     p => 
-                                    <li>
+                                    <li style = {{borderBottom:"5px solid #ADD8E6"}}>
                                         <li id="list-card-comments-user" onClick = {(event)=> handleSelectUser(event, idNamePair.userName)}>
                                         {p[0]}
                                         </li>
                                         <li id="list-card-comments-comment">
-                                            {"-" + p[1]}
+                                            {p[1]}
                                         </li>
                                     </li>)
                                     }
@@ -299,7 +302,7 @@ function ListCard(props) {
                                 type="text"
                                 id="comment-bar"
                                 placeholder={"Add a comment!"}
-                                style={{width: "98%", height:"20%", position:"relative"}}
+                                style={{width: "100%", height:"20%", position:"relative"}}
                                 onKeyPress = {handleKeyPress}
                                 //onChange={handleChange}
                                 //onLoad={handleChange}

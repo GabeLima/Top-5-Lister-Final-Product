@@ -254,6 +254,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow: scroll;
+  /* background-color: black; */
 }
 
 .list-card,
@@ -421,7 +422,7 @@ body {
   font-size: 24pt;
   /* height:15%; */
   top:0%;
-  background-color: #d8d4f4;
+  background-color: #add8e6;
 }
 
 #save-publish{
@@ -431,7 +432,7 @@ body {
   font-size: 24pt;
   top:93%;
   height: 10%;
-  background-color: #d8d4f4;
+  background-color: #add8e6;
 }
 #save-publish-buttons{
   position:relative;
