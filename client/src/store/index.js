@@ -47,6 +47,7 @@ let localOnUserLists = false;
 let localOnCommunityLists = false;
 let localSearchText = "";
 let localListCardId = null;
+let guestMode = false;
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
 // AVAILABLE TO THE REST OF THE APPLICATION
@@ -1116,6 +1117,17 @@ function GlobalStoreContextProvider(props) {
         localListCardId = null;
         store.loadIdNamePairs();
     }
+
+    store.setLoginOrRegisterScreen = function(){
+        localOnYourLists = false;
+        localOnAllLists = false;
+        localOnUserLists = false;
+        localOnCommunityLists = false;
+        localListCardId = null;
+        store.loadIdNamePairs();
+    }
+
+
 
     return (
         <GlobalStoreContext.Provider value={{

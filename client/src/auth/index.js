@@ -9,7 +9,8 @@ console.log("create AuthContext: " + AuthContext);
 export const AuthActionType = {
     GET_LOGGED_IN: "GET_LOGGED_IN",
     REGISTER_USER: "REGISTER_USER",
-    LOGIN_USER: "LOGIN_USER"
+    LOGIN_USER: "LOGIN_USER",
+    LOGOUT_USER: "LOGOUT_USER"
 }
 
 function AuthContextProvider(props) {
@@ -22,7 +23,14 @@ function AuthContextProvider(props) {
 
     useEffect(() => {
         //if(auth.loggedIn){
+        //console.log("useEffect getLoggedIn called");
         auth.getLoggedIn();
+        //if(auth.loggedIn && auth.user.userName ==)
+        // if(auth.loggedIn && auth.user.userName === "Guest"){
+        //     authReducer({
+        //         type: AuthActionType.LOGOUT_USER,
+        //     })
+        // }
         //}
     }, []);
 
@@ -48,6 +56,13 @@ function AuthContextProvider(props) {
                 return setAuth({
                     user: payload.user,
                     loggedIn: payload.loggedIn //Assuming that if the login user reducer is called, we're loggedIn
+                })
+            }
+            case AuthActionType.LOGOUT_USER: {
+                console.log("Inside logout_USER reducer, loggedIn: ", payload.loggedIn);
+                return setAuth({
+                    user: null,
+                    loggedIn: false //Assuming that if the login user reducer is called, we're loggedIn
                 })
             }
             default:
@@ -80,8 +95,11 @@ function AuthContextProvider(props) {
 
     auth.getLoggedIn = async function () {
         try{
+            // console.log(store);
+            // console.log("Are we logged in?", auth.loggedIn);
+            //&& response.data.user.userName !== "Guest"
             const response = await api.getLoggedIn();
-            if (response.status === 200) {
+            if (response.status === 200 && response.data.user.userName !== "Guest") {
                 authReducer({
                     type: AuthActionType.GET_LOGGED_IN,
                     payload: {

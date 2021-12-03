@@ -49,7 +49,7 @@ function Statusbar() {
             }
             return "Community Lists";
         }
-        return "Your Lists";
+        return "";
     }
     function shouldDisplayAddLists(){
         if(store.onYourListsPage){

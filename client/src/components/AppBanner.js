@@ -32,6 +32,11 @@ export default function AppBanner() {
         auth.logoutUser(store);
     }
 
+    const handleLogin = () => {
+        store.setLoginOrRegisterScreen();
+        handleMenuClose();
+    }
+
     const menuId = 'primary-search-account-menu';
     const loggedOutMenu = (
         <Menu
@@ -49,8 +54,8 @@ export default function AppBanner() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}><Link to='/login/'>Login</Link></MenuItem>
-            <MenuItem onClick={handleMenuClose}><Link to='/register/'>Create New Account</Link></MenuItem>
+            <MenuItem ><Link to='/login/' onClick={handleLogin}>Login</Link></MenuItem>
+            <MenuItem ><Link to='/register/' onClick={handleLogin}>Create New Account</Link></MenuItem>
         </Menu>
     );
     const loggedInMenu = 
