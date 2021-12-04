@@ -13,6 +13,7 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { GlobalStoreContext } from '../store'
 import Container from '@mui/material/Container';
+import AlertModal from './AlertModal'
 
 export default function LoginScreen() {
     const { auth } = useContext(AuthContext);
@@ -93,6 +94,7 @@ export default function LoginScreen() {
             </Box>
           </Box>
           <Copyright sx={{ mt: 8, mb: 4 }} />
+          <AlertModal></AlertModal>
         </Container>
       </ThemeProvider>
     );

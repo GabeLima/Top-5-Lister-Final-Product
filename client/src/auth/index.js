@@ -152,6 +152,7 @@ function AuthContextProvider(props) {
                     }
                 })
                 history.push("/");
+                store.setYourListsView();
                 store.loadIdNamePairs();
             }
         }catch(Exception){

@@ -737,7 +737,7 @@ function GlobalStoreContextProvider(props) {
                             break;
                         }
                     }
-                    newList.items[mapNum++] = newKey;
+                    newList.items[mapNum++] = newKey + "\xa0\xa0\xa0\xa0\xa0\xa0 (Votes: " + value + ")";
                     if(mapNum >= 5){
                         break;
                     }

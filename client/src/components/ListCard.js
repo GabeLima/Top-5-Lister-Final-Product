@@ -288,7 +288,7 @@ function ListCard(props) {
                                 {reversedComments.map(
                                     p => 
                                     <li style = {{borderBottom:"5px solid #ADD8E6"}}>
-                                        <li id="list-card-comments-user" onClick = {(event)=> handleSelectUser(event, idNamePair.userName)}>
+                                        <li id="list-card-comments-user" onClick = {(event)=> handleSelectUser(event, p[0])}>
                                         {p[0]}
                                         </li>
                                         <li id="list-card-comments-comment">
